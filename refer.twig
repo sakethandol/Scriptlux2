@@ -1,0 +1,172 @@
+{% include 'header.twig' %}
+
+{% if error %}
+	<div class="alert alert-dismissible alert-danger">
+		{{ errorText }}
+	</div>
+	<br>
+{% endif %}
+
+{% if success %}
+	<div class="alert alert-dismissible alert-success">
+		{{ successText }}
+	</div>
+	<br>
+{% endif %}
+
+
+<div class="container">
+	<div class="row">
+
+	{% if contentText is not empty %}
+	<div class="col-md-12">
+		<div class="well ">
+			{{ contentText }}
+		</div>
+	</div>
+{% endif %}
+		<div class="col-md-12">
+			<div class="well" style="overflow-x:auto;">
+				<div class="table-responsive">
+				<table class="table ">
+					<thead>
+						<tr>
+							<th>{{lang["referral.refer.link"]}}</th>
+							<th>{{lang["referral.refer.commision"]}}
+							</th>
+							<th>{{lang["referral.refer.payout"]}}
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{ site["url"] }}/affiliates?ref={{ user['ref_code'] }}</td>
+							<td>{{settings["referral_commision"]}}%</td>
+							<td>
+								{{convert_currency(settings["referral_payout"])}}
+							</td>
+						</tr>
+					</tbody>
+
+				</table>
+			</div>
+			</div>
+			<div class="well" style="overflow-x:auto;">
+				<div class="table-responsive">
+				<table class="table ">
+					<thead>
+						<tr>
+							<th>{{lang["referral.refer.visits"]}}</th>
+							<th>{{lang["referral.refer.signup"]}}</th>
+							<th>{{lang["referral.refer.conversion.rate"]}}</th>
+							<th>{{lang["referral.refer.total.earning"]}}</th>
+							<th>{{lang["referral.refer.paid.earning"]}}</th>
+							<th>{{lang["referral.refer.unpaid.earning"]}}</th>
+							<th>{{lang["referral.refer.rejected"]}}</th>
+							<th></th>
+						</tr>
+					</thead>
+
+					<tbody>
+
+												<tr>
+													<td>{{ ref_content['referral_clicks'] }}</td>
+													<td>{{ ref_content['referral_sign_up'] }}</td>
+													<td>{{ ref_content['ref_conversion_rate'] }}%</td>
+													<td>
+														{{convert_currency(ref_content["referral_total_commision"])}}
+													</td>
+													<td>
+														{{convert_currency(ref_content["referral_earned_commision"])}}
+													</td>
+													<td>
+														{{convert_currency(ref_content["ref_unpaid_earning"])}}
+
+													</td>
+													<td>
+														{{convert_currency(ref_content["referral_rejected_commision"])}}
+													</td>
+													<td>
+
+														<a href="{{site["url"]}}/refer/paid-out">
+															<button {{ref_content["paid_out_allowed"]}} type="button" class="btn btn-primary">Paid Out</button>
+														</a>
+													</td>
+												</tr>
+
+
+
+					</tbody>
+
+				</table>
+			</div>
+			</div>
+
+
+			<div class="well" style="overflow-x:auto;">
+				<div class="table-responsive">
+				<table class="table ">
+					<thead>
+						<tr>
+							<th>
+								{{lang["referral.payout.requested.at"]}}
+							</th>
+							<th>
+								{{lang["referral.payout.payment.amount"]}}
+							</th>
+
+							<th>
+								{{lang["referral.payout.updated.at"]}}
+							</th>
+							<th>
+								{{lang["referral.payout.payout.status"]}}</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						{% for ref_payout in ref_payouts %}
+							<tr>
+								<td>{{ ref_payout['r_p_requested_at'] }}</td>
+
+								<td>
+									<span>
+										{{curr_symbol }}
+									</span>
+
+									{{convert_currency(ref_payout['r_p_amount_requested'])}}
+
+								</td>
+
+								<td>{{ ref_payout['r_p_updated_at'] }}</td>
+								<td>
+									{% if (ref_payout['r_p_status'] == 0)  %}
+										{{ lang["referral.payout.status.pending"] }}
+									{% elseif (ref_payout['r_p_status'] == 1)  %}
+										{{ lang["referral.payout.status.disapproved"] }}
+									{% elseif (ref_payout['r_p_status'] == 2)  %}
+										{{ lang["referral.payout.status.approved"] }}
+									{% elseif (ref_payout['r_p_status'] == 3)  %}
+										{{ lang["referral.payout.status.rejected"] }}
+									{% endif %}
+								</td>
+
+							</tr>
+						{% endfor %}
+					</tbody>
+
+				</table>
+			</div>
+			</div>
+
+
+		</div>
+		{% if contentTextBottom is not empty %}
+	<div class="col-md-12">
+		<div class="well ">
+			{{ contentTextBottom }}
+		</div>
+	</div>
+{% endif %}
+	</div>
+</div>
+{% include 'footer.twig' %}

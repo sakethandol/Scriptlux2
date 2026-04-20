@@ -1,0 +1,854 @@
+{% include 'header.twig' %}
+
+<style>
+  :root {
+    --color-bg: #fffced;
+    --color-text: #14281D;
+    --color-accent: #14281D;
+    --color-accent-contrast: #fffced;
+    --color-border: rgba(20, 40, 29, 0.1);
+    --color-hover-bg: #f7f6d8;
+  }
+
+  /* ── Reset & Base ─────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── Page wrapper ─────────────────────────────────────── */
+  .sv-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* ── Page header ──────────────────────────────────────── */
+  .sv-header {
+    margin-bottom: 2rem;
+  }
+
+  .sv-header h1 {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: -0.4px;
+    line-height: 1.2;
+  }
+
+  .sv-header p {
+    margin-top: 4px;
+    font-size: 13px;
+    color: rgba(20,40,29,0.45);
+  }
+
+  /* ── Content well (top / bottom) ─────────────────────── */
+  .sv-well {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 14px;
+    color: var(--color-text);
+    line-height: 1.7;
+  }
+
+  /* ── Toolbar ──────────────────────────────────────────── */
+  .sv-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Filter dropdown button */
+  .sv-dropdown-wrap {
+    position: relative;
+    display: inline-block;
+  }
+
+  .sv-btn-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+    border: none;
+    border-radius: 9px;
+    padding: 9px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .sv-btn-filter:hover { opacity: 0.82; }
+
+  .sv-btn-filter svg { flex-shrink: 0; }
+
+  /* Dropdown panel */
+  .sv-dropdown-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 7px);
+    left: 0;
+    z-index: 200;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    min-width: 230px;
+    max-height: 380px;
+    overflow-y: auto;
+    box-shadow: 0 8px 28px rgba(20,40,29,0.09);
+    padding: 5px 0;
+  }
+
+  .sv-dropdown-panel.open { display: block; }
+
+  .sv-dropdown-panel a {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 16px;
+    font-size: 13px;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: background 0.1s;
+    cursor: pointer;
+  }
+
+  .sv-dropdown-panel a:hover { background: var(--color-hover-bg); }
+
+  .sv-dropdown-panel a.active {
+    background: var(--color-hover-bg);
+    font-weight: 600;
+  }
+
+  .sv-dropdown-panel a .cat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    opacity: 0.35;
+    flex-shrink: 0;
+  }
+
+  .sv-dropdown-panel a.active .cat-dot { opacity: 1; }
+
+  /* Search */
+  .sv-search-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 320px;
+    min-width: 160px;
+  }
+
+  .sv-search-wrap svg {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(20,40,29,0.35);
+    pointer-events: none;
+  }
+
+  .sv-search-wrap input {
+    width: 100%;
+    padding: 9px 14px 9px 34px;
+    border: 1px solid var(--color-border);
+    border-radius: 9px;
+    background: #fff;
+    color: var(--color-text);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .sv-search-wrap input::placeholder { color: rgba(20,40,29,0.35); }
+
+  .sv-search-wrap input:focus { border-color: rgba(20,40,29,0.4); }
+
+  /* ── Chips row ────────────────────────────────────────── */
+  .sv-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .sv-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(20,40,29,0.07);
+    color: var(--color-text);
+    border: none;
+    border-radius: 20px;
+    padding: 5px 13px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+  }
+
+  .sv-chip:hover { background: rgba(20,40,29,0.13); }
+
+  .sv-chip.active {
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+  }
+
+  /* ── Table card ───────────────────────────────────────── */
+  .sv-table-card {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .sv-table-scroll { overflow-x: auto; }
+
+  table.sv-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  /* thead */
+  .sv-table thead {
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .sv-table thead th {
+    padding: 11px 15px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+    color: rgba(20,40,29,0.4);
+    white-space: nowrap;
+  }
+
+  /* category separator rows */
+  .sv-table .sv-cat-row td {
+    padding: 9px 15px;
+    background: var(--color-bg);
+    font-size: 11.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(20,40,29,0.45);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .sv-cat-row:first-child td { border-top: none; }
+
+  .sv-cat-row .cat-icon {
+    margin-right: 7px;
+    font-style: normal;
+  }
+
+  /* data rows */
+  .sv-table tbody tr.sv-data-row td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+    color: var(--color-text);
+  }
+
+  .sv-table tbody tr.sv-data-row:last-child td { border-bottom: none; }
+
+  .sv-table tbody tr.sv-data-row:hover td { background: var(--color-hover-bg); }
+
+  /* Favourite star */
+  .sv-fav {
+    cursor: pointer;
+    color: rgba(20,40,29,0.25);
+    font-size: 15px;
+    transition: color 0.15s, transform 0.15s;
+    line-height: 1;
+    display: inline-block;
+  }
+
+  .sv-fav:hover { transform: scale(1.2); }
+
+  .sv-fav.active { color: #d4a017; }
+
+  /* ID cell */
+  .sv-id-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--color-hover-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 7px;
+    padding: 3px 9px;
+    font-family: monospace;
+    font-size: 12px;
+    color: rgba(20,40,29,0.55);
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+    white-space: nowrap;
+  }
+
+  .sv-id-pill:hover {
+    background: rgba(20,40,29,0.1);
+    color: var(--color-text);
+  }
+
+  .sv-id-pill svg { opacity: 0.55; flex-shrink: 0; }
+
+  /* Service name */
+  .sv-name { font-weight: 500; }
+
+  /* Price badge */
+  .sv-price {
+    display: inline-block;
+    background: rgba(20,40,29,0.07);
+    border-radius: 7px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+
+  /* Min / max / avg */
+  .sv-muted { color: rgba(20,40,29,0.5); font-size: 12px; }
+
+  /* Details button */
+  .sv-btn-details {
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+    border: none;
+    border-radius: 8px;
+    padding: 6px 13px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+  }
+
+  .sv-btn-details:hover { opacity: 0.8; }
+
+  /* Empty state */
+  .sv-empty {
+    text-align: center;
+    padding: 3.5rem 1rem;
+    color: rgba(20,40,29,0.3);
+    font-size: 14px;
+  }
+
+  .sv-empty svg { margin-bottom: 12px; opacity: 0.2; }
+
+  /* ── Modal ────────────────────────────────────────────── */
+  .sv-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(20,40,29,0.5);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .sv-modal-overlay.open { display: flex; }
+
+  .sv-modal {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid var(--color-border);
+    width: 100%;
+    max-width: 480px;
+    overflow: hidden;
+    animation: svModalIn 0.18s ease;
+  }
+
+  @keyframes svModalIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .sv-modal-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .sv-modal-head h2 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text);
+    line-height: 1.4;
+  }
+
+  .sv-modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(20,40,29,0.35);
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+    padding: 0;
+    margin-top: -2px;
+    transition: color 0.12s;
+  }
+
+  .sv-modal-close:hover { color: var(--color-text); }
+
+  .sv-modal-body {
+    padding: 18px 20px;
+  }
+
+  .sv-modal-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .sv-modal-meta .sv-price { font-size: 13px; }
+
+  .sv-meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--color-hover-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 7px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(20,40,29,0.65);
+  }
+
+  .sv-modal-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(20,40,29,0.7);
+  }
+
+  /* ── Toast ────────────────────────────────────────────── */
+  .sv-toast {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+    padding: 9px 20px;
+    border-radius: 22px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 9999;
+    opacity: 0;
+    transition: transform 0.22s ease, opacity 0.22s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .sv-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  /* ── Responsive ───────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .sv-table thead th:nth-child(6),
+    .sv-table tbody td:nth-child(6),
+    .sv-table thead th:nth-child(7),
+    .sv-table tbody td:nth-child(7) { display: none; }
+  }
+
+  @media (max-width: 520px) {
+    .sv-table thead th:nth-child(5),
+    .sv-table tbody td:nth-child(5) { display: none; }
+    .sv-search-wrap { max-width: 100%; }
+  }
+</style>
+<div class="sv-page">
+  <div class="sv-header">
+    <h1>Services</h1>
+    <p>Browse and place orders from our available services</p>
+  </div>
+  {# {% if contentText is not empty %}
+    <div class="sv-well">{{ contentText }}</div>
+  {% endif %} #}
+  <div class="sv-toolbar">
+    <!-- Category dropdown -->
+    <div class="sv-dropdown-wrap" id="svDropWrap">
+      <button class="sv-btn-filter" id="svDropBtn" onclick="svToggleDrop()" aria-haspopup="true" aria-expanded="false">
+        <!-- filter icon -->
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 4h14M4 8h8M7 12h2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span id="svDropLabel">All categories</span>
+        <!-- chevron -->
+        <svg id="svChevron" width="10" height="10" viewBox="0 0 10 10" fill="none" style="transition:transform 0.2s;" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <div class="sv-dropdown-panel" id="svDropPanel">
+        <a href="javascript:void(0)" class="active" data-cat-id="All" onclick="svFilterCat('All', 'All categories', this)">
+          <span class="cat-dot"></span> All categories
+        </a>
+        {% for category in serviceCategory %}
+          <a href="javascript:void(0)"
+             data-cat-id="{{ category['category_id'] }}"
+             onclick="svFilterCat('{{ category['category_id'] }}', '{{ category['category_name'] }}', this)">
+            <span class="cat-dot"></span>
+            {% if category['category_icon']['iconType'] == 'emoji' %}
+              {{ category['category_icon']['icon'] }}
+            {% endif %}
+            {{ category['category_name'] }}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+    <!-- Search input -->
+    <div class="sv-search-wrap">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="10" y1="10" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <input type="text" id="svSearchInput" placeholder="Search services…" oninput="svHandleSearch(this.value)" autocomplete="off">
+    </div>
+
+  </div>
+  <div class="sv-chips" id="svChips">
+    <button class="sv-chip active" data-chip="All" onclick="svFilterCat('All', 'All categories', null)">All</button>
+    {% for category in serviceCategory %}
+      <button class="sv-chip" data-chip="{{ category['category_id'] }}"
+              onclick="svFilterCat('{{ category['category_id'] }}', '{{ category['category_name'] }}', null)">
+        {% if category['category_icon']['iconType'] == 'emoji' %}{{ category['category_icon']['icon'] }} {% endif %}
+        {{ category['category_name'] }}
+      </button>
+    {% endfor %}
+  </div>
+  <div class="sv-table-card">
+    <div class="sv-table-scroll">
+      <table class="sv-table" id="svTable">
+        <thead>
+          <tr>
+            {% if site['modules']['favorite_services'] %}
+              <th></th>
+            {% endif %}
+            <th>{{ lang['services.id'] }}</th>
+            <th>{{ lang['services.name'] }}</th>
+            <th>{{ lang['services.price'] }}</th>
+            <th>{{ lang['services.min'] }}</th>
+            <th>{{ lang['services.max'] }}</th>
+            {% if settings['service_avg_time'] != 1 %}
+              <th>{{ lang['services.average_time'] }}</th>
+            {% endif %}
+            <th>{{ lang['services.desc'] }}</th>
+          </tr>
+        </thead>
+        <tbody id="svTableBody">
+
+          {% for category in serviceCategory %}
+            <tr class="sv-cat-row" data-cat-row="{{ category['category_id'] }}">
+              <td colspan="100%">
+                <span class="cat-icon">
+                  {% if category['category_icon']['iconType'] == 'image' %}
+                    <img src="{{ category['category_icon']['icon'] }}" alt="{{ category['category_name'] }}"
+                         style="width:14px; height:14px; object-fit:contain; vertical-align:middle; margin-right:4px;">
+                  {% endif %}
+                  {% if category['category_icon']['iconType'] == 'icon' %}
+                    <i class="{{ category['category_icon']['icon'] }}" style="margin-right:4px;"></i>
+                  {% endif %}
+                  {% if category['category_icon']['iconType'] == 'emoji' %}
+                    {{ category['category_icon']['icon'] }}
+                  {% endif %}
+                </span>
+                {{ category['category_name'] }}
+              </td>
+            </tr>
+
+            {% for service in category['services'] %}
+              <tr class="sv-data-row" data-cat="{{ category['category_id'] }}"
+                  data-service-name="{{ service['service_name'] | lower }}"
+                  data-service-id="{{ service['service_id'] }}">
+
+                {% if site['modules']['favorite_services'] %}
+                  <td>
+                    <span class="sv-fav {% if service['isFav'] %}active{% endif %}"
+                          data-service-id="{{ service['service_id'] }}"
+                          onclick="svToggleFav(this)"
+                          title="{% if service['isFav'] %}Remove from favourites{% else %}Add to favourites{% endif %}">
+                      {% if service['isFav'] %}★{% else %}☆{% endif %}
+                    </span>
+                  </td>
+                {% endif %}
+                <td>
+                  <span class="sv-id-pill"
+                        onclick="svCopyId('{{ service['service_id'] }}')"
+                        title="Click to copy ID">
+                    {{ service['service_id'] }}
+                    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="5" y="1" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.4"/>
+                      <rect x="1" y="5" width="9" height="9" rx="2" fill="#fff" stroke="currentColor" stroke-width="1.4"/>
+                    </svg>
+                  </span>
+                </td>
+                <td class="sv-name">{{ service['service_name'] }}</td>
+                <td>
+                  <span class="sv-price">{{ convert_currency(service['service_price']) }}</span>
+                </td>
+                <td class="sv-muted">{{ service['service_min'] }}</td>
+                <td class="sv-muted">{{ service['service_max'] }}</td>
+                {% if settings['service_avg_time'] != 1 %}
+                  <td class="sv-muted">{{ service['service_avg_time'] }}</td>
+                {% endif %}
+                <td>
+                  <button class="sv-btn-details"
+                          onclick="svOpenModal('{{ service['service_id'] }}')">
+                    View details
+                  </button>
+                  <script type="application/json" id="svModalData_{{ service['service_id'] }}">
+                  {
+                    "name": {{ service['service_name'] | json_encode | raw }},
+                    "price": {{ convert_currency(service['service_price']) | json_encode | raw }},
+                    "min": {{ service['service_min'] | json_encode | raw }},
+                    "max": {{ service['service_max'] | json_encode | raw }},
+                    "avg": {{ service['service_avg_time'] | json_encode | raw }},
+                    "desc": {{ service['service_description'] | json_encode | raw }}
+                  }
+                  </script>
+                </td>
+              </tr>
+            {% endfor %}
+
+          {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+    <!-- Empty state (shown via JS when no results) -->
+    <div class="sv-empty" id="svEmpty" style="display:none;">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" display="block" style="margin:0 auto 10px;">
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="16" y1="16" x2="21" y2="21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="8" y1="11" x2="14" y2="11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      No services match your search
+    </div>
+  </div>
+  {% if contentTextBottom is not empty %}
+    <div class="sv-well" style="margin-top:1.5rem;">{{ contentTextBottom }}</div>
+  {% endif %}
+</div>
+
+<div class="sv-modal-overlay" id="svModalOverlay" onclick="svOverlayClick(event)">
+  <div class="sv-modal" id="svModal">
+    <div class="sv-modal-head">
+      <h2 id="svModalTitle">Service details</h2>
+      <button class="sv-modal-close" onclick="svCloseModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="sv-modal-body">
+      <div class="sv-modal-meta" id="svModalMeta"></div>
+      <div class="sv-modal-desc" id="svModalDesc"></div>
+    </div>
+  </div>
+</div>
+<div class="sv-toast" id="svToast">ID copied!</div>
+<script>
+(function () {
+  'use strict';
+  var activeCat  = 'All';
+  var searchQ    = '';
+  function svToggleDrop() {
+    var panel   = document.getElementById('svDropPanel');
+    var chevron = document.getElementById('svChevron');
+    var btn     = document.getElementById('svDropBtn');
+    var isOpen  = panel.classList.contains('open');
+    if (isOpen) {
+      panel.classList.remove('open');
+      chevron.style.transform = 'rotate(0deg)';
+      btn.setAttribute('aria-expanded', 'false');
+    } else {
+      panel.classList.add('open');
+      chevron.style.transform = 'rotate(180deg)';
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  }
+  document.addEventListener('click', function (e) {
+    var wrap = document.getElementById('svDropWrap');
+    if (wrap && !wrap.contains(e.target)) {
+      var panel   = document.getElementById('svDropPanel');
+      var chevron = document.getElementById('svChevron');
+      var btn     = document.getElementById('svDropBtn');
+      panel.classList.remove('open');
+      chevron.style.transform = 'rotate(0deg)';
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    }
+  });
+  function svFilterCat(catId, catLabel, triggerEl) {
+    activeCat = catId;
+    document.getElementById('svDropLabel').textContent = catLabel;
+    var dropLinks = document.querySelectorAll('#svDropPanel a');
+    dropLinks.forEach(function (a) {
+      a.classList.toggle('active', a.getAttribute('data-cat-id') === catId);
+    });
+    var chips = document.querySelectorAll('.sv-chip');
+    chips.forEach(function (c) {
+      c.classList.toggle('active', c.getAttribute('data-chip') === catId);
+    });
+	/* Close dropdown */
+    document.getElementById('svDropPanel').classList.remove('open');
+    document.getElementById('svChevron').style.transform = 'rotate(0deg)';
+    var btn = document.getElementById('svDropBtn');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+
+    svApplyFilters();
+  }
+
+  /* ── Search ─────────────────────────────────────────── */
+  function svHandleSearch(val) {
+    searchQ = val.toLowerCase().trim();
+    svApplyFilters();
+  }
+
+  /* ── Apply all active filters ───────────────────────── */
+  function svApplyFilters() {
+    var dataRows = document.querySelectorAll('#svTableBody .sv-data-row');
+    var catRows  = document.querySelectorAll('#svTableBody .sv-cat-row');
+    var visCount = 0;
+
+    /* Track which categories have at least one visible service */
+    var visibleCats = {};
+
+    dataRows.forEach(function (row) {
+      var rowCat  = row.getAttribute('data-cat');
+      var rowName = row.getAttribute('data-service-name') || '';
+      var rowId   = String(row.getAttribute('data-service-id') || '');
+
+      var catMatch    = (activeCat === 'All') || (rowCat === activeCat);
+      var searchMatch = !searchQ || rowName.indexOf(searchQ) !== -1 || rowId.indexOf(searchQ) !== -1;
+
+      if (catMatch && searchMatch) {
+        row.style.display = '';
+        visCount++;
+        visibleCats[rowCat] = true;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    catRows.forEach(function (row) {
+      var id = row.getAttribute('data-cat-row');
+      row.style.display = visibleCats[id] ? '' : 'none';
+    });
+
+    /* Empty state */
+    document.getElementById('svEmpty').style.display = visCount === 0 ? 'block' : 'none';
+  }
+
+  /* ── Modal ──────────────────────────────────────────── */
+  function svOpenModal(serviceId) {
+    var dataEl = document.getElementById('svModalData_' + serviceId);
+    if (!dataEl) return;
+
+    var data;
+    try { data = JSON.parse(dataEl.textContent); } catch (e) { return; }
+
+    document.getElementById('svModalTitle').textContent = data.name || 'Service details';
+
+    /* Meta pills */
+    var meta = document.getElementById('svModalMeta');
+    meta.innerHTML =
+      '<span class="sv-price">' + (data.price || '') + '</span>' +
+      '<span class="sv-meta-pill">Min: ' + (data.min || '—') + '</span>' +
+      '<span class="sv-meta-pill">Max: ' + (data.max || '—') + '</span>' +
+      (data.avg ? '<span class="sv-meta-pill">&#x23F1; ' + data.avg + '</span>' : '');
+
+    /* Description */
+    document.getElementById('svModalDesc').innerHTML = data.desc || 'No description available.';
+
+    document.getElementById('svModalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function svCloseModal() {
+    document.getElementById('svModalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function svOverlayClick(e) {
+    if (e.target === document.getElementById('svModalOverlay')) svCloseModal();
+  }
+
+  /* Close modal on Escape key */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') svCloseModal();
+  });
+
+  function svCopyId(id) {
+    var text = String(id);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text);
+    } else {
+      /* Fallback for older browsers */
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    svShowToast('ID ' + text + ' copied!');
+  }
+
+  function svToggleFav(el) {
+    var isActive = el.classList.contains('active');
+    el.classList.toggle('active', !isActive);
+    el.textContent = isActive ? '☆' : '★';
+    el.title = isActive ? 'Add to favourites' : 'Remove from favourites';
+    /* Wire your AJAX favourite endpoint here if needed */
+  }
+
+  /* ── Toast ──────────────────────────────────────────── */
+  var toastTimer;
+  function svShowToast(msg) {
+    var toast = document.getElementById('svToast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2000);
+  }
+
+  /* ── Expose to global scope (onclick= attributes) ───── */
+  window.svToggleDrop   = svToggleDrop;
+  window.svFilterCat    = svFilterCat;
+  window.svHandleSearch = svHandleSearch;
+  window.svOpenModal    = svOpenModal;
+  window.svCloseModal   = svCloseModal;
+  window.svOverlayClick = svOverlayClick;
+  window.svCopyId       = svCopyId;
+  window.svToggleFav    = svToggleFav;
+
+})();
+</script>
+
+{% include 'footer.twig' %}

@@ -1,0 +1,454 @@
+<style>
+{# #fffcd #14281D Hunter Green #}
+{# #D6FFF6 #231651 Mint green russian violet #}
+{# #e1bb80 #352208 Light brown coffee brown #}
+{# #eaf2ef #912f56 Twilight lavender plum #}
+{# #F87060 #102542 Desert Sand #}
+{# #e0ff4f #00272b chartreuse gunmetal #}
+
+{# #fffcd #14281D Hunter Green #}
+    :root {
+      --color-bg: #fffced;
+        --color-text: #14281D;
+        --color-accent: #14281D;
+      --color-accent-contrast: #fffced;
+        --color-border: rgba(20, 40, 29, 0.1);
+        --color-hover-bg: #f7f6d8;
+    }
+
+{# #D6FFF6 #231651 Mint green russian violet #}
+{# :root {
+    --color-bg: #D6FFF6;
+    --color-text: #231651;
+    --color-accent: #231651;
+    --color-accent-contrast: #D6FFF6;
+    --color-border: rgba(35, 22, 81, 0.15);
+    --color-hover-bg: #C1F2E8;
+} #}
+
+    body {
+        transition: background-color 0.4s ease, color 0.4s ease;
+    }
+.section-hunter-cream {
+    background-color: var(--color-accent);
+    background-image:
+        /* top left cream glow */
+        radial-gradient(at 0% 0%,     rgba(255, 252, 222, 0.18) 0px, transparent 55%),
+        /* bottom right cream glow */
+        radial-gradient(at 100% 100%, rgba(255, 252, 222, 0.14) 0px, transparent 55%),
+        /* bottom left subtle tint */
+        radial-gradient(at 0% 100%,   rgba(255, 252, 222, 0.08) 0px, transparent 45%),
+        /* top right subtle tint */
+        radial-gradient(at 100% 0%,   rgba(255, 252, 222, 0.06) 0px, transparent 45%),
+        /* center warm glow */
+        radial-gradient(at 50% 50%,   rgba(255, 252, 222, 0.12) 0px, transparent 75%),
+        /* diagonal ridge sweep */
+        linear-gradient(
+            152deg,
+            rgba(255, 252, 222, 0.06) 0%,
+            rgba(255, 252, 222, 0.00) 40%,
+            rgba(255, 252, 222, 0.04) 100%
+        );
+    background-attachment: fixed;
+    position: relative;
+}
+
+/* dot texture using cream #fffcde */
+.section-hunter-cream::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image:
+        radial-gradient(circle, rgba(255, 252, 222, 0.12) 1px,   transparent 1px),
+        radial-gradient(circle, rgba(255, 252, 222, 0.05) 1.5px, transparent 1.5px);
+    background-size: 28px 28px, 56px 56px;
+    background-position: 0 0, 14px 14px;
+}
+
+  @media (max-width: 767px) {
+    .section-hunter-cream {
+      background-attachment: scroll;
+      background-image:
+        radial-gradient(at 0% 0%, rgba(255, 252, 222, 0.12) 0px, transparent 55%),
+        radial-gradient(at 100% 100%, rgba(255, 252, 222, 0.10) 0px, transparent 55%),
+        linear-gradient(152deg, rgba(255, 252, 222, 0.04) 0%, rgba(255, 252, 222, 0.00) 100%);
+    }
+
+    .section-hunter-cream::before {
+      opacity: 0.18;
+      background-size: 40px 40px, 80px 80px;
+    }
+  }
+{# .page-bg {
+    background:
+        radial-gradient(ellipse at 30% 58%, rgba(255, 253, 229, 0.65) 0%, transparent 36%),
+        radial-gradient(ellipse at 68% 25%, rgba(255, 253, 229, 0.20) 0%, transparent 30%),
+        radial-gradient(ellipse at 80% 85%, rgba(255, 253, 229, 0.15) 0%, transparent 28%),
+        linear-gradient(152deg,
+            #1e2b25 0%,
+            #2e3f37 20%,
+            #43534a 42%,
+            #5a7268 58%,
+            #43534a 76%,
+            #1e2b25 100%
+        );
+    background-image:
+        radial-gradient(circle, rgba(255, 253, 229, 0.15) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255, 253, 229, 0.08) 2px, transparent 2px);
+    background-size: 28px 28px, 56px 56px;
+    background-attachment: fixed;
+    min-height: 100vh;
+} #}
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+a {
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+a:hover {
+    color: #0f1d14;
+}
+
+.btn,
+button,
+input[type="submit"],
+input[type="button"],
+.btn-primary {
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 0.7rem 1.2rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.1s ease;
+}
+
+.btn:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.btn-primary:hover {
+    background: var(--color-hover-bg);
+    color: var(--color-hover-text);
+}
+
+.btn:active,
+button:active,
+input[type="submit"]:active,
+input[type="button"]:active,
+.btn-primary:active {
+    transform: translateY(1px);
+}
+
+.btn:focus-visible,
+button:focus-visible,
+input[type="submit"]:focus-visible,
+input[type="button"]:focus-visible,
+.btn-primary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-focus);
+}
+
+.btn[disabled],
+button[disabled],
+input[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-outline,
+.btn-secondary {
+    background: transparent;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+.btn-outline:hover,
+.btn-secondary:hover {
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+}
+</style>
+
+<style>
+  /* ── Navbar entrance animation ── */
+  @keyframes navSlideDown {
+    from { opacity: 0; transform: translateY(-16px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)     scale(1);    }
+  }
+  @keyframes linkFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
+  @keyframes sidebarIn {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(0);    }
+  }
+
+  #main-nav {
+    animation: navSlideDown 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  /* Staggered nav link entrance */
+  /* Bigger, attractive nav buttons */
+.nav-pill {
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  border: 1.5px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.nav-pill:hover {
+  border-color: var(--color-border);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.nav-pill.active-page {
+  border-color: var(--color-accent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+  .nav-link-item {
+    animation: linkFadeIn 0.4s ease both;
+  }
+  .nav-link-item:nth-child(1) { animation-delay: 0.08s; }
+  .nav-link-item:nth-child(2) { animation-delay: 0.14s; }
+  .nav-link-item:nth-child(3) { animation-delay: 0.20s; }
+  .nav-link-item:nth-child(4) { animation-delay: 0.26s; }
+  .nav-link-item:nth-child(5) { animation-delay: 0.32s; }
+  .nav-link-item:nth-child(6) { animation-delay: 0.38s; }
+
+  /* ── Nav link pill hover effect ── */
+  .nav-pill {
+    position: relative;
+    overflow: hidden;
+    transition: color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  }
+  .nav-pill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: var(--color-hover-bg, rgba(0,0,0,0.06));
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: -1;
+  }
+  .nav-pill:hover::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .nav-pill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .nav-pill:active {
+    transform: scale(0.95) translateY(0);
+  }
+  .nav-pill.active-page {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+
+  /* ── Logo shimmer ── */
+  .logo-link {
+    position: relative;
+  }
+  .logo-link::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 12px;
+    background: var(--color-accent, #f59e0b);
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: -1;
+  }
+  .logo-link:hover::after {
+    opacity: 0.1;
+    transform: scale(1);
+  }
+
+  /* ── Mobile sidebar link animation ── */
+  .mobile-nav-link {
+    transition: padding-left 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                background 0.2s ease,
+                box-shadow 0.2s ease;
+  }
+  .mobile-nav-link:hover {
+    padding-left: 1.75rem;
+    box-shadow: inset 3px 0 0 var(--color-accent, #f59e0b);
+  }
+
+  /* ── Mobile menu button ── */
+  .hamburger-btn {
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .hamburger-btn:hover {
+    transform: rotate(5deg) scale(1.05);
+    background: var(--color-hover-bg);
+  }
+  .hamburger-btn:active {
+    transform: scale(0.9);
+  }
+
+  /* ── Language button ── */
+.lang-btn {
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+.lang-btn:hover {
+    transform: translateY(-1px);
+    background-color: rgba(20, 40, 29, 0.2);
+    color: white;
+}
+
+  #main-nav.scrolled {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  }
+</style>
+
+<style>
+.sidebar-open {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.sidebar-closed {
+    transform: translateX(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+</style>
+
+{# the bounce dots animation is in login.twig #}
+<style>
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-4px); }
+  }
+</style>
+
+<style>
+  @media (max-width: 767px) {
+    .login-page {
+      min-height: auto !important;
+      padding: 120px 0.85rem 1.25rem !important;
+      align-items: flex-start !important;
+    }
+
+    .login-page + .py-4.py-md-5.mt-3.mt-md-4 {
+      margin-top: 0.5rem !important;
+      padding-top: 1rem !important;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .login-page {
+      padding-top: 110px !important;
+    }
+  }
+</style>
+
+
+{# signup css  #}
+
+<style>
+  /* Global Resets for Form Components */
+  .form-control:focus {
+    box-shadow: 0 0 0 5px rgba(var(--color-accent-rgb), 0.12) !important;
+    border-color: var(--color-accent) !important;
+    background: #fff !important;
+    outline: none;
+  }
+  
+  .btn-signup-submit:hover {
+    filter: brightness(1.1);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(var(--color-accent-rgb), 0.45);
+  }
+
+  .btn-signup-submit:active {
+    transform: translateY(0);
+  }
+
+  /* Responsive Fixes to Prevent "Going Out" of screen */
+  @media (max-width: 991px) {
+    .signup-card { 
+        border-radius: 0 !important; 
+        border: none !important; 
+        box-shadow: none !important;
+        flex-direction: column;
+    }
+    .signup-page-wrapper { 
+        padding: 0 !important; 
+        background: var(--color-bg) !important;
+        align-items: flex-start !important;
+    }
+    .form-inner-box {
+        max-width: 100% !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    .form-container {
+        padding: 3rem 1.5rem !important;
+    }
+  }
+
+  /* Mobile Font Size Tweaks */
+  @media (max-width: 576px) {
+    h2 { font-size: 2.2rem !important; }
+    .form-control { font-size: 16px !important; }
+    .btn-signup-submit { font-size: 1.1rem !important; border-radius: 14px !important; }
+  }
+</style>
+<style>
+  /* Global Resets for Form Components */
+  .form-control:focus {
+    box-shadow: 0 0 0 5px rgba(var(--color-accent-rgb), 0.12) !important;
+    border-color: var(--color-accent) !important;
+    background: #fff !important;
+    outline: none;
+  }
+  
+  .btn-signup-submit:hover {
+    filter: brightness(1.1);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(var(--color-accent-rgb), 0.45);
+  }
+
+  .btn-signup-submit:active {
+    transform: translateY(0);
+  }
+
+  /* Responsive Fixes to Prevent "Going Out" of screen */
+  @media (max-width: 991px) {
+    .signup-page-wrapper {
+      padding: clamp(200px, 20vh, 250px) 0.75rem 2rem !important;
+    }
+    .signup-card {…}
+    .form-inner-box {…}
+    .form-container {…}
+  }
+
+  /* Mobile Font Size Tweaks */
+  @media (max-width: 576px) {
+    .signup-page-wrapper {
+      padding: clamp(120px, 16vh, 120px) 0.75rem 2rem !important;
+    }
+    h2 { font-size: 2.2rem !important; }
+    .form-control { font-size: 16px !important; }
+    .btn-signup-submit { font-size: 1.1rem !important; border-radius: 14px !important; }
+  }
+</style>

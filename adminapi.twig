@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin API Documentation</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style> 
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 70px; /* adjust 70px to your sticky header height */
+      }
+    /* Reset and globals */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f4f4f4; color: #333; }
+    a { text-decoration: none; color: inherit; }
+
+    /* Navbar */
+    
+    #admin-navbar { background: #34495e; color: #fff; position: sticky; top: 0; z-index: 100; }
+    .navbar { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: auto; padding: 1rem; }
+    .navbar-brand { font-size: 1.5rem; font-weight: 700; }
+    .nav-toggle { display: none; font-size: 1.5rem; cursor: pointer; }
+
+    /* Layout */
+    .container { display: grid; grid-template-columns: 250px 1fr; gap: 1rem; max-width: 1200px; margin: 1rem auto; padding: 0 1rem; }
+
+    /* Sidebar */
+    aside { position: sticky; top: 80px; align-self: start; }
+    #documentation-nav { list-style: none; background: #fff; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); overflow-y: auto; height: calc(100vh - 100px); }
+    #documentation-nav li { border-bottom: 1px solid #eee; }
+    #documentation-nav li:last-child { border-bottom: none; }
+    #documentation-nav a { display: block; padding: 0.75rem 1rem; color: #34495e; font-size: 0.95rem; }
+    #documentation-nav a:hover { background: #ecf0f1; }
+
+    /* Content */
+    .content { background: #fff; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 1.5rem; }
+    .doc-title { font-size: 1.75rem; margin-bottom: 1rem; font-weight: 700; }
+    h3 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.75rem; }
+    p { margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+    th, td { padding: 0.75rem; border-bottom: 1px solid #ddd; text-align: left; }
+    th { background: #ecf0f1; font-weight: 600; }
+    .examples { margin-bottom: 2rem; }
+    .examples h5 { margin: 1rem 0 0.5rem; font-size: 1rem; }
+    pre { background: #ecf0f1; padding: 1rem; border-radius: 5px; font-size: 0.9rem; overflow-x: auto; margin-bottom: 1rem; }
+
+    /* Medium screens */
+   @media (max-width: 992px) {
+  /* Medium screens - Sidebar becomes fixed and collapsible */
+  .container { grid-template-columns: 60px 1fr; }
+  .nav-toggle { display: block; color: #fff; }
+  #documentation-nav { 
+    position: fixed;   /* Sidebar fixed to screen */
+    top: 60px;
+    left: -260px;      /* Hidden by default */
+    width: 250px;
+    transition: left 0.3s ease; /* Smooth slide effect */
+    height: calc(100vh - 60px);
+    z-index: 90;
+  }
+  #documentation-nav.open { left: 0; }  /* Slide in when open */
+}
+ @media (max-width: 768px) {
+  /* Sidebar structure for small screens */
+  .container { grid-template-columns: 60px 1fr; }  /* Space for toggle button */
+
+  .nav-toggle { display: block; color: #fff; }  /* Ensure toggle is visible */
+
+  /* Sidebar styling */
+  #documentation-nav {
+    position: fixed;   /* Fixed for slide effect */
+    top: 60px;
+    left: -200px;      /* Initially hidden */
+    width: 200px;      /* Fixed width for small screens */
+    transition: left 0.3s ease; /* Slide effect */
+    height: calc(100vh - 60px);
+    z-index: 90;
+    background-color: #fff;  /* Background color to match layout */
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1); /* Optional shadow */
+  }
+
+  #documentation-nav.open { left: 0; }  /* Slide in when open */
+}
+
+
+    #documentation-nav a.active {
+      background-color: #34495e;
+      color: white;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+    .btn-apinew {
+  display: inline-block;
+  background-color: #3498db;   /* Blue button color */
+  color: white !important;     /* White text */
+  padding: 10px 20px;          /* Padding */
+  border-radius: 5px;          /* Rounded corners */
+  text-decoration: none;       /* Remove underline */
+  font-weight: 600;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-apinew:hover {
+  background-color: #2980b9;   /* Darker blue on hover */
+}
+
+  
+@media (max-width: 600px) {
+  .container {
+    display: block;
+    padding: 0;
+  }
+  aside {
+    width: 100%;
+    position: static;
+  }
+  section.content {
+    width: 100%;
+    padding: 1rem 0.5rem;
+  }
+}
+table {
+  table-layout: fixed;  /* makes columns respect width */
+  word-wrap: break-word; /* breaks long words */
+  word-break: break-word; /* break long words on overflow */
+  width: 100%;
+}
+
+td, th {
+  overflow-wrap: break-word; /* allow breaking long URLs */
+  max-width: 100%;
+}
+
+
+  </style>
+</head>
+<body>
+  <header id="admin-navbar">
+    <div class="navbar">
+      <div class="navbar-brand">Admin API</div>
+      <div class="nav-toggle" id="navToggle">☰</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <aside>
+      <ul id="documentation-nav">
+        {% for method in apiPageContent %}
+          <li><a href="#method-{{ method.name }}">{{ method.name }}</a></li>
+        {% endfor %}
+      </ul>
+    </aside>
+
+    <section class="content">
+      <div class="doc-title" id="overview">Admin API Overview</div>
+      <table>
+        <tr><th>Authentication</th><td>Required</td></tr>
+        <tr><th>HTTP Method</th><td>POST</td></tr>
+        <tr><th>API URL</th><td>{{ site['url'] }}/adminapi/v1</td></tr>
+        <tr><th>Response</th><td>JSON</td></tr>
+      </table>
+
+      {% for method in apiPageContent %}
+        <h3 id="method-{{ method.name }}">Method: {{ method.name }}</h3>
+        <p>{{ method.description }}</p>
+        <table>
+          <tr><th>Parameter</th><th>Description</th></tr>
+          {% for param in method.required_params %}
+            <tr><td>{{ param.name }}</td><td>{{ param.description }}</td></tr>
+          {% endfor %}
+        </table>
+        <table>
+          <tr><th>Response Field</th><th>Value</th></tr>
+          <tr><td>status</td><td>Success or failure</td></tr>
+          {% if method.errors %}
+            <tr><td>error</td><td>
+              {% for err in method.errors %}
+                <strong>{{ err.code }}</strong>: {{ err.description }}<br>
+              {% endfor %}
+            </td></tr>
+          {% endif %}
+        </table>
+        <div class="examples">
+          {% if method.success_response %}
+            <h5>Success Response</h5>
+            <pre>{{ method.success_response|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</pre>
+          {% endif %}
+          {% if method.example_request %}
+            <h5>Request Format</h5>
+            <pre>{{ method.example_request|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</pre>
+          {% endif %}
+          {% if method.error_response %}
+            <h5>Error Response</h5>
+            <pre>{{ method.error_response|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</pre>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+     <a href="/exampleAdmin.txt" target="_blank" class="btn-apinew btn btn-default">Example of PHP code</a>
+
+    </section>
+  </div>
+
+  <script>
+    const nav = document.getElementById('documentation-nav');
+    document.getElementById('navToggle').addEventListener('click', () => nav.classList.toggle('open'));  
+    
+    
+  document.addEventListener("DOMContentLoaded", function() {
+    const methodLinks = document.querySelectorAll("#documentation-nav a");
+    const methods = Array.from(methodLinks).map(link => {
+      const id = link.getAttribute("href").substring(1); // remove #
+      return document.getElementById(id);
+    });
+
+    function onScroll() {
+      const scrollPosition = window.scrollY || window.pageYOffset;
+
+      let currentIndex = 0;
+      for (let i = 0; i < methods.length; i++) {
+        if (methods[i].offsetTop - 100 <= scrollPosition) {
+          currentIndex = i;
+        }
+      }
+
+      methodLinks.forEach(link => link.classList.remove("active"));
+      if (methodLinks[currentIndex]) {
+        methodLinks[currentIndex].classList.add("active");
+      }
+    }
+
+    window.addEventListener("scroll", onScroll);
+    onScroll(); // Initialize on page load
+  });
+</script>
+
+</body>
+</html>

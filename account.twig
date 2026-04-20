@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<base href="{{ site['url'] }}/">
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>{{ title }}</title>
+			{% if site['keywords'] %}
+		<meta name="keywords" content="{{ site['keywords'] }}">
+		{% endif %}
+			{% if meta_robots %}
+				<meta name="robots" content="{{ meta_robots }}">
+			{% endif %}
+				{% if site['description'] %}
+		<meta name="description" content="{{ site['description'] }}">
+		{% endif %}
+		{% if site['favicon'] %}
+			<link rel="shortcut icon" type="image/ico" href="{{ site['favicon'] }}"/>
+			<link rel="icon" type="image/png" sizes="192x192" href="{{ site['favicon'] }}" />
+    <link rel="icon" type="image/png" sizes="512x512" href="{{ site['favicon'] }}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ site['favicon'] }}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ site['favicon'] }}" />
+    <link rel="apple-touch-icon" href="{{ site['favicon'] }}" />
+		{% endif %}
+			{% if meta_header  %}
+			{{ meta_header }}
+			{% endif %}
+		{{ headerCode }}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+		<script src="https://kit.fontawesome.com/c28b5df4df.js" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+	{% include "maincss.twig" %}
+		<style>
+			html,
+			body {
+				margin: 0;
+				height: 100%;
+			}
+
+			li {
+				font-family: 'Poppins', sans-serif;
+				font-weight: 500;
+			}
+
+			body {
+				font-family: 'Poppins', sans-serif;
+
+			}
+
+
+			#loading {
+				position: fixed;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				opacity: 0.7;
+				background-color: #F5F5F5;
+				z-index: 99;
+			}
+
+			#loading-image {
+				z-index: 100;
+			}
+
+			.modal.in {
+				position: absolute;
+				top: 30%;
+
+			}
+			.select2-container {
+				background-color: #fff !important;
+				border-radius: 4px !important;
+				box-shadow: rgba(50, 50, 93, 0.25) 0px 1px 0.5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 0.5px -1px;
+				border: 0;
+			}
+
+			.select2-container--bootstrap .select2-selection.form-control {
+        border-radius: 4px;
+}
+.select2-container--bootstrap.select2-container--open.select2-container--below .select2-selection {
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+	border-bottom-color: #ccc;
+}
+			.select2-container--bootstrap .select2-selection--single .select2-selection__rendered {
+				color: #000;
+				margin-top: 2px !important;
+				font-size: 15px;
+			}
+			
+			.select2-dropdown ul li {
+				color: #000 !important;
+			}
+			.cards {
+			min-height: 20px;
+			padding: 10px;
+			margin-bottom: 0;
+			margin-right: 10;
+			margin-left: 10;
+			color: #fff !important;
+			border: 1px solid rgba(0, 0, 0, .1);
+			border-radius: 4px;
+			box-shadow: inset 0 1px 1px rgb(0 0 0 / 5%);
+			margin-top: 5px;
+			margin-bottom: 5px;
+		}
+
+
+	}
+	.body .form-group .search-dropdown .input-wrapper {
+
+		position: relative;
+	}
+
+	.body .form-group .search-dropdown .input-wrapper .input-wrapper__prepend,
+	.form-group .search-dropdown .input-wrapper .input-wrapper__append {
+		position: absolute;
+		background: none;
+		border: none;
+		top: 50%;
+		transform: translateY(-50%);
+		padding: 0 2px;
+
+	}
+
+	.body .form-group .search-results {
+	    position: absolute !important;
+    max-height: 300px;
+    border-radius: 8px;
+    margin-top: 8px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-top-width: 0px;
+    border-bottom-width: 0px;
+    border-color: transparent;
+    border-style: solid;
+    box-shadow: 0 12px 24px 12px rgba(0, 0, 0, 0.2);
+    overflow-y: auto !important;
+    width: calc(100% - 6.5rem);
+    background: #fff;
+    z-index: 1;
+    left: 32px;
+	}
+
+	.body .form-group .search-dropdown .input-wrapper .input-wrapper__prepend {
+		left: 10px;
+	}
+	.body .form-group .search-dropdown .input-wrapper .form-control {
+		padding-left: 35px;
+		padding-right: 10px;
+	}
+	.body .form-group .select2-selection--single {
+		display: flex;
+		align-items: center;
+	}
+
+	.body .form-group .search-dropdown .input-wrapper .input-wrapper__prepend,
+	.form-group .search-dropdown .input-wrapper .input-wrapper__append {
+		position: absolute;
+		background: none;
+		border: none;
+		top: 50%;
+		transform: translateY(-50%);
+		padding: 0 2px;
+	}
+.body .form-group .search-dropdown .input-wrapper .input-wrapper__prepend span {
+    line-height: 2;
+}	
+	.body .form-group .search-dropdown .input-wrapper .input-wrapper__append {
+		font-size: 15px;
+		right: 16px;
+		display: none;
+	}
+	.body .form-group .search-dropdown .input-wrapper .input-wrapper__prepend:hover,
+	.body .form-group .search-dropdown .input-wrapper .input-wrapper__append:hover {
+		opacity: 0.5;
+	}
+	.body .form-group .search-dropdown .input-wrapper .input-wrapper__prepend:hover,
+	.body .form-group .search-dropdown .input-wrapper .input-wrapper__append:focus {
+		outline: none;
+	}
+  .body .form-group .search-results ul.resultServicesList {
+    padding-left: 0;
+    margin-bottom: 5px;
+}
+ .body .form-group .search-results ul.resultServicesList li.resultService {
+    cursor: pointer;
+    list-style-type: none;
+	padding:6px !important;
+}
+.body .form-group .search-results ul.resultServicesList li.resultService:hover {
+    background-color: #f2f2f2;
+    
+}
+.body .form-group .search-results ul.resultServicesList li.resultService a {
+  color: #000;
+  text-decoration: none;
+}
+.google-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	margin-top:25px;
+    padding: 10px 20px;
+    width: 100%;
+    background-color: grey;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+	font-weight:bold;
+    border-radius: 4px;
+	transition: font-size .3s ease-in-out;
+	box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+}
+.google-login-btn:hover {
+	color:#fff;
+	text-decoration: none;
+	font-size:16.3px;
+}
+.google-login-btn i {
+	margin-right: 1rem;
+}
+		</style>
+
+
+	</head>
+	<body class="body">
+		{% if user['auth'] %}
+			<nav class="navbar navbar-default navbar-static-top ">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="{{ site['url'] }}">
+							{% if site["logo"] %}
+								<img src="{{ site['logo'] }}" alt="" title="">
+							{% else %}
+								<span style="font-weight:700;">
+									{{ site["site_name"] }}
+								</span>
+							{% endif %}
+						</a>
+					</div>
+					<div id="navbar" class="collapse navbar-collapse">
+						<ul class="nav navbar-nav navbar-left-block">
+
+							{% for page in pagesInformation %}
+
+								{% set page_get = page["page_get"] %}
+								{% set page_icon = page["page_icon"] %}
+
+
+								<li {% if isPageActive("#{page_get}") %} class="active" {% endif %}>
+
+									<a href="{{ site['url'] }}/{{page_get}}">
+										<span>
+											<i class="{{ page_icon }}"></i>
+										</span>
+
+										{% set custom_page = page["custom_page"] %}
+										{% set page_name = page["page_name"] %}
+										{% if custom_page == 1 %}
+											{{ lang["#{page_get}.title"] }}
+										{% else %}
+											{{page_name}}
+										{% endif %}
+
+										{% if page_get == "tickets" %}
+											{% if ticketCount %}
+												<span class="badge">{{ ticketCount }}
+												</span>
+											{% endif %}
+										{% endif %}
+									</a>
+
+								</li>
+
+
+							{% endfor  %}
+
+
+						</ul>
+
+
+						<ul class="nav navbar-nav navbar-right navbar-right-block">
+
+
+							{% if user["access"]["admin_access"] %}
+
+								<li class="nav-item component-navbar-nav-item component-navbar-private-nav-item">
+									<a class="component-navbar-nav-link  component-navbar-nav-link__navbar-private" href="{{ site['url'] }}/admin">
+										<i class="fas fa-user-shield"></i>
+
+									</a>
+								</li>
+							{% endif  %}
+
+							{% if settings["currency_converter"] == 1 %}
+
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+										<span class="language-icon-span"></span>
+										<span class="language-name-span">{{user['user_pref_curr']}}</span>
+										<span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu dropdown-max-height">
+										{% for currency in currencies %}
+											<li>
+												<a class="dropdown-item" href="{{ site['url'] }}?user_pref_curr={{currency['currency_name']}}">{{currency['currency_name']}}</a>
+											</li>
+
+
+										{% endfor %}
+
+									</ul>
+								</li>
+							{% endif  %}
+
+							<li>
+								<a>
+									<span class="badge">
+
+										{{convert_currency(user['balance'])}}
+									</span>
+								</a>
+							</li>
+							{%  if pagesData[13]["page_status_auth"] == 2 %}
+								<li {% if active_menu == "account" %} class="active" {% endif %}>
+									<a href="account">
+										<span>
+											<i class="{{ pagesData[13]["page_icon"]}}"></i>
+										</span>
+										{{ lang['account.title'] }}</a>
+								</li>
+							{% endif %}
+							<li>
+								<a href="logout">{{ lang['logout.title'] }}</a>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+			</nav>
+		{% else %}
+<nav class="position-fixed z-3 rounded-4 border transition shadow px-3 px-sm-4 py-3 py-sm-2"
+     id="main-nav"
+<div style="
+    position: fixed; 
+    top: clamp(1rem, 3vw, 3rem); 
+    left: clamp(2rem, 7vw, 9rem); 
+    right: clamp(2rem, 7vw, 9rem); 
+    background-color: rgba(255, 252, 205, 0.80); 
+    backdrop-filter: blur(16px); 
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--color-border);
+    padding: 1.5rem;
+    border-radius: 1rem;
+">
+</div>
+
+<style>
+  @media (max-width: 768px) {
+    #main-nav {
+      left: clamp(0.75rem, 2vw, 5rem) !important;
+      right: clamp(0.75rem, 2vw, 5rem) !important;
+      padding: 0.75rem 1rem !important;
+    }
+  }
+</style>
+
+  <div class="container-xl d-flex align-items-center justify-content-between" style="min-height: 56px;">
+    <div class="flex-shrink-0">
+      <a class="logo-link d-flex align-items-center gap-2" href="{{ site['url'] }}">
+        {% if site["logo"] %}
+          <img src="{{ site['logo'] }}" alt="Logo"
+               class="h-auto" style="height: 2.75rem;">
+        {% else %}
+          <span class="fs-4 fw-bold text-uppercase"
+                style="color: var(--color-text);">
+            {{ site["site_name"] }}
+          </span>
+        {% endif %}
+      </a>
+    </div>
+
+ <div class="d-none d-md-flex align-items-center gap-2 gap-lg-3">
+  {% for page in pagesInformation %}
+    {% if page["page_status_non_auth"] == 2 %}
+      {% set page_get = page["page_get"] %}
+      <a href="{{ site['url'] }}/{{page_get}}"
+         class="nav-pill nav-link-item d-flex align-items-center gap-2 px-4 py-2 rounded-pill fw-bold fs-6
+                {% if isPageActive(page_get) %} active-page shadow {% endif %}
+                {% if page_get == 'login' %} no-hover {% endif %}"
+         style="color: var(--color-text); 
+                letter-spacing: 0.03em;
+                font-size: 0.95rem;
+                {% if isPageActive(page_get) %} 
+                  color: var(--color-text); 
+                {% endif %}">
+        <i class="{{ page['page_icon'] }} fs-5"></i>
+        <span class="text-truncate" style="max-width: 150px;">{{ page["page_name"] }}</span>
+      </a>
+    {% endif %}
+  {% endfor %}
+</div>
+
+    <div class="d-flex align-items-center gap-2 gap-sm-3">
+      {% if site['languages']|length > 1 %}
+      <div class=" dropdown">
+        <button class="lang-btn btn btn-sm px-3 py-2 rounded-3 fw-bold d-flex align-items-center gap-2 text-uppercase border-0"
+				style="color: white; font-size: 0.75rem;"
+                data-bs-toggle="dropdown" aria-expanded="false">
+          {% for lang in site['languages'] %}{% if lang['active'] %}{{ lang['code'] }}{% endif %}{% endfor %}
+          <i class="fa-solid fa-chevron-down opacity-50" style="font-size: 9px;"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end rounded-3 shadow border p-1 mt-2"
+            style=" border-color: var(--color-border); min-width: 10rem;">
+          {% for lang in site['languages'] %}
+            <li>
+              <a href="{{ site['url'] }}?lang={{ lang['code'] }}"
+                 class="dropdown-item rounded-2 py-2 small {% if lang['active'] %} fw-bold {% endif %}"
+                 style="color: white">
+                {{ lang['name'] }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <button onclick="toggleMobileMenu()"
+              class="hamburger-btn btn d-md-none p-2 rounded-3"
+              style="color: white;">
+        <i class="fa-solid fa-bars-staggered fs-4"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div id="mobile-overlay"
+     onclick="toggleMobileMenu()"
+     class="d-none d-md-none position-fixed top-0 start-0 end-0 bottom-0"
+     style="background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 70;">
+</div>
+
+<aside id="mobile-sidebar"
+       class="d-md-none position-fixed top-0 end-0 bottom-0 d-flex flex-column border-start border-2 shadow"
+       style="width: min(75vw, 380px); min-width: 280px; z-index: 80; transform: translateX(100%);
+	    transition: transform 0.5s ease-in-out;
+	   background-color: var(--color-bg); border-color: var(--color-border);">
+  <div class="p-4 d-flex flex-column h-100 overflow-y-auto">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom" style="border-color: var(--color-border);">
+      <span class="fw-bold text-uppercase fs-4" style="color: var(--color-text);">MENU</span>
+      <button onclick="toggleMobileMenu()"
+              class="btn p-2 rounded-circle"
+              style="color: white;">
+        <i class="fa-solid fa-xmark fs-3"></i>
+      </button>
+    </div>
+
+    <div class="d-flex flex-column gap-3">
+      {% for page in pagesInformation %}
+        <a href="{{ site['url'] }}/{{page['page_get']}}"
+           class="mobile-nav-link d-flex align-items-center gap-3 px-4 py-4 rounded-4 fw-bold fs-5 border text-decoration-none"
+           style="color: var(--color-text); background-color: rgba(0,0,0,0.05); border-color: transparent; transition: all 0.2s;">
+          <i class="{{ page['page_icon'] }} opacity-75 fs-3 text-center flex-shrink-0" style="min-width: 36px;"></i>
+          <span class="text-truncate">{{ page["page_name"] }}</span>
+        </a>
+      {% endfor %}
+    </div>
+
+    <div class="mt-auto pt-4">
+      <div class="p-4 rounded-4 border border-2 d-flex flex-column gap-3"
+           style="border-color: var(--color-border); background-color: rgba(0, 0, 0, 0.03);">
+        {# {% if settings["currency_converter"] == 1 %}
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="opacity-50 text-uppercase small fw-bold" style="color: var(--color-text);">Currency</span>
+          <span class="fs-4 fw-bold" style="color: var(--color-accent);">{{guest_pref_curr}}</span>
+        </div>
+        {% endif %} #}
+        <div class="d-flex flex-column align-items-center gap-2 pt-4 border-top border-2" style="border-color: var(--color-border);">
+          <div class="rounded-pill" style="width: 3rem; height: 4px; background: var(--color-accent); opacity: 0.3;"></div>
+          <p class="small text-center opacity-50 text-uppercase fw-bold mb-0"
+             style="color: var(--color-text);">
+            <i class="far fa-copyright me-2"></i>
+            {{ site["site_name"] }}
+          </p>
+          <p class="small opacity-25 mb-0" style="color: var(--color-text);">
+            All rights reserved
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</aside>
+<script>
+
+
+  // Mobile Menu
+ // ...existing code...
+function toggleMobileMenu() {
+  const sidebar = document.getElementById('mobile-sidebar');
+  const overlay = document.getElementById('mobile-overlay');
+  
+  // Check current state
+  const isOpen = sidebar.style.transform === 'translateX(0px)' || sidebar.style.transform === 'translateX(0%)';
+  
+  if (!isOpen) {
+    // Open menu
+    sidebar.style.transform = 'translateX(0)';
+    overlay.classList.remove('d-none');
+    setTimeout(() => overlay.classList.add('opacity-100'), 10);
+    document.body.style.overflow = 'hidden';
+  } else {
+    // Close menu
+    sidebar.style.transform = 'translateX(100%)';
+    overlay.classList.remove('opacity-100');
+    setTimeout(() => overlay.classList.add('d-none'), 500);
+    document.body.style.overflow = 'auto';
+  }
+}
+// ...existing code...
+
+  // Scrolled shadow state
+  window.addEventListener('scroll', () => {
+    document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 10);
+  }, { passive: true });
+</script>
+<script>
+  document.querySelectorAll('.dropdown').forEach(function(dropdown) {
+    const btn = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+    const menu = dropdown.querySelector('.dropdown-menu');
+
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      menu.classList.toggle('show');
+    });
+
+    document.addEventListener('click', function() {
+      menu.classList.remove('show');
+    });
+
+    menu.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+  });
+</script>
+	{% endif %}
+
+	<style>
+		.body .modal .modal-content {
+			background: #fff;
+			color: black;
+		}
+
+		.modal-header h5 {
+			color: black;
+		}
+		.modal-footer a {
+			color: #fff;
+		}
+		.modal-header {
+			border-bottom: none;
+		}
+		.modal-footer {
+			border-top: none;
+		}
+	</style>

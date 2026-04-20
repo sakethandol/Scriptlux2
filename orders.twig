@@ -1,0 +1,138 @@
+{% include 'header.twig' %}
+
+<div class="min-vh-100 py-4" style="background-color: var(--color-bg); color: var(--color-text);">
+    <div class="container-fluid px-md-5">
+        
+        <div class="row align-items-center mb-4">
+            <div class="col-md-6 mb-3 mb-md-0 text-center text-md-start">
+                <h1 class="h4 fw-bold mb-1" style="letter-spacing: -0.5px;">My Orders</h1>
+                <p class="small opacity-75 mb-0">Manage your active service requests</p>
+            </div>
+            <div class="col-md-6">
+                <form action="" method="get">
+                    <div class="input-group shadow-sm border rounded-pill overflow-hidden bg-white">
+                        <span class="input-group-text bg-white border-0 ps-3">
+                            <i class="fa fa-search opacity-50"></i>
+                        </span>
+                        <input type="text" name="search" class="form-control border-0 p-2 shadow-none" value="{{ search }}" placeholder="Search orders...">
+                        <button type="submit" class="btn px-4 fw-bold" style="background-color: var(--color-accent); color: var(--color-accent-contrast);">
+                            Find
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="d-flex overflow-auto pb-3 mb-4 no-scrollbar" style="white-space: nowrap;-webkit-overflow-scrolling: touch;">
+            <div class="btn-group gap-2">
+                {% set statuses = ['all', 'pending', 'inprogress', 'completed', 'partial', 'processing', 'canceled'] %}
+                {% for s in statuses %}
+                    <a href="orders/{{ s == 'all' ? '' : s }}" 
+                       class="btn btn-sm px-4 py-2 fw-bold text-uppercase rounded-pill border-0 shadow-sm transition-all"
+                       style="{% if s == status %}
+                                background-color: var(--color-accent) !important; color: var(--color-accent-contrast) !important;
+                              {% else %}
+                                background-color: var(--color-hover-bg); color: var(--color-text);
+                              {% endif %}">
+                        {{ lang['orders.status.' ~ s] }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="row g-3">
+            {% for order in orders %}
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative transition-all" 
+                     style="background-color: #ffffff;">
+                    
+                    {% set status_color = '#6c757d' %}
+                    {% if order['status'] == 'Completed' %}{% set status_color = '#198754' %}
+                    {% elseif order['status'] == 'Pending' %}{% set status_color = '#ffc107' %}
+                    {% elseif order['status'] == 'In progress' %}{% set status_color = '#0dcaf0' %}
+                    {% elseif order['status'] == 'Canceled' %}{% set status_color = '#dc3545' %}{% endif %}
+                    
+                    <div class="position-absolute top-0 end-0 p-3">
+                        <span class="badge rounded-pill shadow-sm" style="background-color: {{ status_color }}; font-size: 0.65rem; letter-spacing: 0.5px;">
+                            {{ order['status'] }}
+                        </span>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="small fw-bold opacity-50 text-uppercase" style="cursor: pointer;" onclick="copyTextToClipboard('{{ order['id'] }}')">
+                                #{{ order['id'] }} <i class="fas fa-copy ms-1"></i>
+                            </span>
+                            <span class="small opacity-50" style="font-size: 0.75rem;">{{ show_date(order['date']) }}</span>
+                        </div>
+
+                        <h6 class="fw-bold mb-2 text-truncate-2" style="color: var(--color-text); min-height: 2.5rem;">
+                            {{ order['service'] }}
+                        </h6>
+
+                        <a href="{{ order['link'] }}" target="_blank" class="d-block mb-3 text-decoration-none small text-truncate" style="color: var(--color-accent); background: var(--color-hover-bg); padding: 5px 10px; border-radius: 8px;">
+                            <i class="fas fa-link me-2"></i>{{ order['link'] }}
+                        </a>
+
+                        <div class="row g-2 mb-4">
+                            <div class="col-6">
+                                <div class="p-2 rounded-3 border text-center" style="background-color: var(--color-bg);">
+                                    <div class="small opacity-50 text-uppercase" style="font-size: 0.6rem;">Quantity</div>
+                                    <div class="fw-bold">{{ order['quantity'] }}</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-2 rounded-3 border text-center" style="background-color: var(--color-bg);">
+                                    <div class="small opacity-50 text-uppercase" style="font-size: 0.6rem;">Charge</div>
+                                    <div class="fw-bold">{{ convert_currency(order['charge']) }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            {% if site["modules"]['reorder_button'] %}
+                                <a href="?select_service_id={{order['service_id']}}" class="btn btn-sm py-2 fw-bold text-uppercase" 
+                                   style="background-color: var(--color-accent); color: var(--color-accent-contrast); border-radius: 10px; font-size: 0.75rem;">
+                                   <i class="fas fa-redo me-1"></i> Reorder
+                                </a>
+                            {% endif %}
+                            
+                            <div class="d-flex gap-2">
+                                {% if order['refillButton'] == 1 or order['refillButton'] == 2 %}
+                                    <button class="btn btn-sm btn-outline-dark flex-grow-1 refill-button fw-bold" data-order-id="{{ order['id'] }}" style="border-radius: 10px; font-size: 0.7rem;">
+                                        Refill
+                                    </button>
+                                {% endif %}
+
+                                {% if order['cancelButton'] == 1 %}
+                                    <button class="btn btn-sm btn-danger cancel-button px-3 shadow-sm border-0" data-order-id="{{ order['id'] }}" style="border-radius: 10px;">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if pagination["count"] > 1 %}
+        <nav class="mt-5 overflow-auto">
+            <ul class="pagination pagination-sm justify-content-center gap-2">
+                {% for page in 1..pagination["count"] %}
+                    <li class="page-item {% if page == pagination['current'] %}active{% endif %}">
+                        <a class="page-link rounded-circle border-0 shadow-sm d-flex align-items-center justify-content-center" 
+                           href="orders/{{ status }}/{{ page }}{% if search %}?search={{ search }}{% endif %}"
+                           style="width: 40px; height: 40px; {% if page == pagination['current'] %} background-color: var(--color-accent); color: var(--color-accent-contrast); {% else %} background-color: #fff; color: var(--color-text); {% endif %}">
+                            {{ page }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+
+{% include 'footer.twig' %}

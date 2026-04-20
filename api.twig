@@ -1,0 +1,257 @@
+{% include 'header.twig' %}
+
+<div class="api-wrapper section-hunter-cream">
+    <div class="container">
+        <div class="row mb-5 pt-5">
+            <div class="col-lg-8">
+                <div class="glass-badge mb-3">DEVELOPER HUB v2.0</div>
+                <h1 class="fw-black text-white display-4 mb-3">{{lang["api.title.text"]}}</h1>
+                <p class="lead text-white-50">Seamlessly integrate our services into your workflow with our robust REST API.</p>
+                <div class="header-line"></div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                {% if contentText is not empty %}
+                <div class="info-well mb-4">
+                    <i class="fa-solid fa-circle-info me-2"></i> {{ contentText }}
+                </div>
+                {% endif %}
+
+                {% for content in apiPageContent["apiData"] %}
+                <div class="api-main-card mb-4">
+                    <div class="card-header-custom d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0 fw-bold">{{content["heading"]}}</h4>
+                        <span class="method-badge">POST</span>
+                    </div>
+                    
+                    <div class="p-4 p-md-5">
+                        <h6 class="text-uppercase fw-bold small-caps mb-3 opacity-50">Parameters</h6>
+                        <div class="table-responsive custom-table-container mb-4">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>{{apiPageContent["parameters"]}}</th>
+                                        <th>{{apiPageContent["description"]}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for params,desc in content["parameters"] %}
+                                    <tr>
+                                        <td><code class="param-name">{{params}}</code></td>
+                                        <td class="text-muted">{{desc}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h6 class="text-uppercase fw-bold small-caps mb-3 opacity-50">Expected Response</h6>
+                        <div class="code-block-wrapper">
+                            <button class="copy-btn" onclick="copyCode(this)">
+                                <i class="fa-regular fa-copy"></i> <span>Copy</span>
+                            </button>
+                            <pre><code class="code-content">{{content["code"]}}</code></pre>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sticky-sidebar">
+                    <div class="api-main-card mb-4">
+                        <div class="card-header-custom">
+                            <h5 class="mb-0 fw-bold"><i class="fa-solid fa-sliders me-2"></i> Endpoint Info</h5>
+                        </div>
+                        <div class="p-4">
+                            <div class="mb-4">
+                                <label class="small text-muted fw-bold text-uppercase">Base URL</label>
+                                <div class="url-display mt-1">
+                                    <code>{{ site["url"] }}/api/v2</code>
+                                </div>
+                            </div>
+
+                            {% if user['auth'] %}
+                            <div class="mb-4">
+                                <label class="small text-muted fw-bold text-uppercase">Your API Key</label>
+                                <a href="{{ site["url"] }}/account" class="btn btn-outline-hunter w-100 mt-2">
+                                    Manage API Key <i class="fa-solid fa-key ms-1"></i>
+                                </a>
+                            </div>
+                            {% endif %}
+
+                            <div class="mb-0">
+                                <label class="small text-muted fw-bold text-uppercase">Response Format</label>
+                                <div class="mt-1">
+                                    <span class="badge bg-soft-hunter text-hunter">JSON</span>
+                                    <span class="badge bg-soft-hunter text-hunter">UTF-8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="api-main-card bg-hunter text-white">
+                        <div class="p-4">
+                            <h5 class="fw-bold mb-3">Starter Kit</h5>
+                            <p class="small opacity-75">Get up and running in minutes with our pre-configured PHP implementation.</p>
+                            <a href="example.txt" class="btn btn-light w-100 fw-bold" target="_blank">
+                                <i class="fa-solid fa-download me-2"></i> Download SDK
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* HUNTER CREAM BACKGROUND SYSTEM */
+    .section-hunter-cream {
+        background-color: var(--color-accent);
+        background-image:
+            radial-gradient(at 0% 0%, rgba(255, 252, 222, 0.18) 0px, transparent 55%),
+            radial-gradient(at 100% 100%, rgba(255, 252, 222, 0.14) 0px, transparent 55%),
+            radial-gradient(at 0% 100%, rgba(255, 252, 222, 0.08) 0px, transparent 45%),
+            radial-gradient(at 100% 0%, rgba(255, 252, 222, 0.06) 0px, transparent 45%),
+            radial-gradient(at 50% 50%, rgba(255, 252, 222, 0.12) 0px, transparent 75%),
+            linear-gradient(
+                152deg,
+                rgba(255, 252, 222, 0.06) 0%,
+                rgba(255, 252, 222, 0.00) 40%,
+                rgba(255, 252, 222, 0.04) 100%
+            );
+        background-attachment: fixed;
+        position: relative;
+        isolation: isolate;
+    }
+
+    .section-hunter-cream::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.5;
+        background-image:
+            radial-gradient(circle, rgba(255, 252, 222, 0.12) 1px, transparent 1px),
+            radial-gradient(circle, rgba(255, 252, 222, 0.05) 1.5px, transparent 1.5px);
+        background-size: 28px 28px, 56px 56px;
+        background-position: 0 0, 14px 14px;
+        z-index: 0;
+    }
+
+    .api-wrapper > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .api-wrapper { min-height: 100vh; padding: 100px 0 80px; }
+    .fw-black { font-weight: 900; letter-spacing: -1.5px; }
+    
+    /* CARD STYLING */
+    .api-main-card { 
+        background: white; 
+        border-radius: 20px; 
+        border: 1px solid rgba(255,252,222,0.1); 
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
+        overflow: hidden; 
+        transition: transform 0.3s ease;
+    }
+    
+    .card-header-custom { 
+        background: #f8fbf9; 
+        border-bottom: 1px solid #eee; 
+        padding: 1.5rem 2rem; 
+        color: #14281D;
+    }
+
+    .bg-hunter { background-color: #14281D !important; }
+    .text-hunter { color: #14281D !important; }
+    .btn-outline-hunter { border: 2px solid #14281D; color: #14281D; font-weight: 700; border-radius: 10px; }
+    .btn-outline-hunter:hover { background: #14281D; color: #fffced; }
+    
+    .bg-soft-hunter { background: #e7f5ee; }
+
+    /* CODE & TABLES */
+    .url-display {
+        background: #f1f1f1;
+        padding: 10px 15px;
+        border-radius: 8px;
+        border-left: 4px solid #14281D;
+    }
+
+    .code-block-wrapper {
+        background: #1e1e1e;
+        border-radius: 12px;
+        padding: 40px 20px 20px;
+        position: relative;
+    }
+
+    .method-badge {
+        background: var(--color-accent);
+        color: var(--color-accent-contrast) !important;
+        font-size: 0.75rem;
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-weight: 900;
+    }
+
+    .param-name { color: #d63384; font-weight: 600; background: #f8f0f3; padding: 2px 6px; border-radius: 4px; }
+    
+    .info-well {
+        background: rgba(255, 252, 222, 0.1);
+        border: 1px solid rgba(255, 252, 222, 0.2);
+        color: var(--color-accent-contrast);
+        padding: 1.5rem;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+    }
+
+    .sticky-sidebar { position: sticky; top: 100px; }
+
+    /* UTILS */
+    .small-caps { letter-spacing: 1px; font-size: 0.8rem; }
+    
+    /* Copy Button */
+    .copy-btn {
+        position: absolute; top: 10px; right: 10px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #ccc;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        transition: all 0.2s;
+    }
+    .copy-btn:hover { background: #fffced; color: #14281D; }
+
+    @media (max-width: 991px) {
+        .section-hunter-cream {
+            background-attachment: scroll;
+        }
+    }
+</style>
+
+<script>
+function copyCode(button) {
+    const codeBlock = button.parentElement.querySelector('.code-content');
+    const range = document.createRange();
+    range.selectNode(codeBlock);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand("copy");
+    window.getSelection().removeAllRanges();
+
+    const original = button.innerHTML;
+    button.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+    button.style.background = "#4BB543";
+    setTimeout(() => {
+        button.innerHTML = original;
+        button.style.background = "";
+    }, 2000);
+}
+</script>
+
+{% include 'footer.twig' %}

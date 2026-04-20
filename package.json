@@ -1,0 +1,19 @@
+{
+  "devDependencies": {
+    "tailwindcss": "^4.1.16"
+  },
+  "name": "halloween",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+  "tailwind": "node ./node_modules/tailwindcss/cli.js",
+  "build": "node ./node_modules/tailwindcss/cli.js -i ./src/input.css -o ./public/output.css",
+  "watch": "node ./node_modules/tailwindcss/cli.js -i ./src/input.css -o ./public/output.css --watch"
+}
+,
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

@@ -1,0 +1,277 @@
+{% include 'header.twig' %}
+
+<div class="container">
+	<div class="row">
+
+	{% if contentText is not empty %}
+	<div class="col-md-12">
+		<div class="well ">
+			{{ contentText }}
+		</div>
+	</div>
+{% endif %}
+		<div class="col-md-12">
+			{% if error %}
+				<div class="alert alert-dismissible alert-danger">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					{{ errorText }}
+				</div>
+			{% endif %}
+			{% if success  %}
+				<div class="alert alert-dismissible alert-success">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					{{ successText  }}
+				</div>
+			{% endif %}
+
+			{% if data["childpanel"]["success"] == 1 %}
+				<div class="alert alert-dismissible alert-success">
+					<strong>
+						Child Id :
+					</strong>
+					{{ data['childpanel']['id'] }}
+					<br>
+					<strong>
+						Service:
+					</strong>
+					{{ data['childpanel']['service'] }}
+					<br>
+					<strong>
+						Domain:
+					</strong>
+					{{ data['childpanel']['link'] }}
+					<br>
+					<strong>
+						Quantity:
+					</strong>
+					{{ data['childpanel']['quantity'] }}
+					<br>
+					<strong>
+						Charge:
+					</strong>
+
+					{{(data['childpanel']['price'] * curr_conversion_price)|number_format(settings["rates_rounding"], '.', ',')}}
+					<br>
+				</div>
+			{% endif %}
+
+			{% if data["childpanel"]["success"] == 2 %}
+				<div class="alert alert-dismissible alert-success">
+					<strong>
+						Order Id:
+					</strong>
+					{{ data['childpanel']['id'] }}
+					<br>
+					<strong>
+						Child Panel Renewed Successfully</strong>
+				</div>
+			{% endif %}
+
+
+			<div class="well" id="tab-add">
+				<form name="contact-form" action="{{ site['url'] }}/child-panel" method="post" id="contact-form">
+					<div class="form-group">
+						<label for="Domain">{{lang["childpanel.domain"]}}</label>
+						<input type="text" class="form-control" name="domain" placeholder="Domain" required>
+					</div>
+					<div class="alert alert-info " id="orderNote">
+						<p class="help-block" style="margin-bottom: 5px">{{lang["childpanel.nameserver.message"]}}</p>
+					</div>
+
+
+					<div class="form-group">
+
+						<label class="Domain" for="currency">{{lang["childpanel.currency"]}}</label>
+
+						<select class="form-control" name="currency" required>
+							{% for currencyCode,data in currenciesDataforChild %}
+								<option value="{{currencyCode}}">{{data["name"]}}
+									-
+									{{currencyCode}}
+									-
+									{{data["symbol"]}}</option>
+							{% endfor %}
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="exampleInputEmail1">Admin Email
+						<span data-toggle="tooltip" data-placement="top" title="Please use a valid email address. This email address will be used to send you important information about your child panel.">
+							<i class="fa fa-question-circle"></i>
+						</label>
+						<input type="text" class="form-control" name="admin_email" placeholder="Admin email" value="{{ user['email'] }}">
+					
+					</div>
+
+					<div class="form-group">
+						<label for="exampleInputEmail1">{{lang["childpanel.username"]}}</label>
+						<input type="text" class="form-control" name="username" placeholder="Username" required>
+					</div>
+
+					<div class="form-group">
+
+						<label class="control-label" for="orderpanelform-password">{{lang["childpanel.password"]}}</label>
+						<input type="password" class="form-control" name="password" placeholder="Password" required>
+					</div>
+
+
+					<div class="form-group">
+
+						<label class="control-label" for="orderpanelform-password">{{lang["childpanel.confirm_password"]}}</label>
+						<input type="password" class="form-control" name="password_confirm" placeholder="Password" required>
+					</div>
+
+
+					<div class="form-group">
+						<label for="charge" class="control-label">{{ lang["neworder.charge"] }}</label>
+						<input type="text" class="form-control" value="{{convert_currency(settings['childpanel_price'])}}" readonly>
+					</div>
+						<input type="hidden" name="crsf_token" value="{{ csrf_token() }}">
+					<button type="submit" class="btn btn-primary" name="submit" value="Submit" id="submit_form">{{lang["childpanel.place_order"]}}</button>
+
+				</form>
+			</div>
+			<div class="response_msg"></div>
+		</div>
+	 <div class="col-md-12">
+		<div class="well ">
+			<div class="table-responsive custom-table">
+								<table class="table ">
+									<thead>
+										<tr>
+											<th>{{lang["childpanel.id"]}}</th>
+											<th>{{lang["childpanel.domain"]}}</th>
+											<th>Nameservers</th>
+											<th>{{lang["childpanel.currency"]}}</th>
+											<th class="width-40">{{lang["childpanel.username"]}}</th>
+											<th class="nowrap">{{lang["childpanel.status"]}}</th>
+											<th class="nowrap">{{lang["childpanel.created"]}}</th>
+											<th class="nowrap">{{lang["childpanel.last.renewed"]}}</th>
+											<th class="nowrap">{{lang["childpanel.action"]}}</th>
+											<th></th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+
+										{% for logs in chilpanel_logs %}
+											<tr>
+												<td>{{ logs['id'] }}</td>
+												<td>{{ logs['domain'] }}</td>
+												<td>
+													{% if logs['nameservers'] is empty %}
+														Not Assigned Yet
+													{% else %}
+													{% set ns = logs['nameservers']|split(',') %}
+													{% for ns in ns %}
+														{{ ns }}<br>
+													{% endfor %}
+													{% endif %}
+												</td>
+												<td>{{ logs['currency'] }}</td>
+												<td class="width-40">{{ logs['child_username'] }}</td>
+												<td class="nowrap">{{ logs['status']|capitalize }}</td>
+												<td class="nowrap">{{ show_date(logs['created_at']) }}</td>
+												<td class="nowrap">{{ show_date(logs['last_renew']) }}</td>
+
+
+												<td class="nowrap">
+
+												{% if logs["status"] != "active" %}
+									{% set expiry =  '-' %}
+								{% else %}
+									{% set expiry =  logs["last_renew"]|date_modify("+30 day")|date('Y-m-d H:i:s') %}
+										{% set renewalDate =  logs["last_renew"]|date_modify("+29 day")|date('Y-m-d H:i:s') %}
+								{% endif %}
+																				{% if (logs['status'] == "frozen" or logs['status'] == "active")  and   renewalDate <= "now"|date('Y-m-d H:i:s') %}
+																						<a href="{{site["url"]}}/child-panel/renew/{{ logs['id'] }}">
+																							<button class="btn btn-primary">Renew</button>
+																						</a>
+																					{% endif %}
+
+												</td>
+												 {% if logs["status"] == "active" %}<td>
+  <button type="button" class="btn btn-primary changePasswordChildPanel" data-toggle="modal"  data-target="#changePasswordModal" data-id="{{ logs["id"] }}" >
+    Change Password
+  </button>
+</td>
+<td>
+  <a href="https://{{ logs['domain'] }}/admin" target="_blank">
+																							<button class="btn btn-primary">Admin area</button>
+																						</a>
+</td>{% endif %}
+
+
+
+											</tr>
+										{% endfor %}
+
+									</tbody>
+								</table>
+							</div>
+		</div>
+
+
+
+		{% if contentTextBottom is not empty %}
+	<div class="col-md-12">
+		<div class="well ">
+			{{ contentTextBottom }}
+		</div>
+	</div>
+{% endif %}
+	</div>
+
+
+
+
+	</div>
+</div></div> 
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="changePasswordLabel">Change Password</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+			</button>
+      </div>
+      <div class="modal-body">
+        <!-- Error Messages -->
+        <div id="changePasswordErrors" class="alert alert-danger" style="display: none;"></div>
+
+
+        <form id="changePasswordForm" method="post" action="/child-panel" class="component_form_group">
+          <input type="hidden" name="child_id" id="changePasswordLogId">
+          <div class="form-group">
+            <label for="newPassword" class="control-label">New Password</label>
+            <div style="position: relative;">
+              <input type="password" id="newPassword" name="new_password" class="form-control" placeholder="Enter new password" required>
+              <button type="button" class="btn btn-light btn-sm" id="toggleNewPassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="confirmPassword" class="control-label">Confirm Password</label>
+            <div style="position: relative;">
+              <input type="password" id="confirmPassword" name="confirm_password" class="form-control" placeholder="Confirm new password" required>
+              <button type="button" class="btn btn-light btn-sm" id="toggleConfirmPassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"  data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="submitChangePassword()">Change Password</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% include 'footer.twig' %}

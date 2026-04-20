@@ -1,0 +1,21 @@
+{% include 'header.twig' %}
+<div class="container">
+	<div class="row">
+		{% if contentText is not empty %}
+			<div class="col-md-12">
+				<div class="well ">
+					{{ contentText }}
+				</div>
+			</div>
+		{% endif %}
+
+		{% if contentTextBottom is not empty %}
+	<div class="col-md-12">
+		<div class="well ">
+			{{ contentTextBottom }}
+		</div>
+	</div>
+{% endif %}
+	</div>
+</div>
+{% include 'footer.twig' %}

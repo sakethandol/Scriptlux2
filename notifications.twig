@@ -1,0 +1,185 @@
+{% include 'header.twig' %}
+<div class="container">
+    <div class="row">
+      <div id="block_200"><div class="block-bg"></div><div class="container"><div class="notifications ">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="notifications-tabs margin-card">
+                <div class="component_tabs ">
+                    <ul class="nav nav-pills tab">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/account">General</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link " href="/notifications">Notifications</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+       
+            {% if contentText is not empty  %}
+                 <br>
+              <div class="services-list">
+                <div class="bg"></div>
+                <div class="divider-top"></div>
+                <div class="divider-bottom"></div>
+                <div class="component_card">
+                  <div class="card">
+                    {{ contentText }}
+                  </div>
+                </div>
+              </div>
+               <br>
+            {% endif %}
+           
+            
+           
+                  {% if error %}
+                    <div class="alert alert-dismissible alert-danger">
+                      <button type="button" class="close" data-dismiss="alert">×</button>
+                      {{ errorText }}
+                    </div>
+                  {% endif %}
+                  {% if success %}
+                    <div class="alert alert-dismissible alert-success">
+                      <button type="button" class="close" data-dismiss="alert">×</button>
+                      {{ successText }}
+                    </div>
+                  {% endif %}
+            {% if user["email_confirmed"] == 1 %}
+               <div class="component_card">
+                <div class="card margin-card">
+                  <h5>Email confirmation</h5>
+                  <p class="mb-2">
+                    Your e-mail address is unconfirmed. Please confirm your email address to receive email notifications.
+                  </p>
+                  <form action="notifications/confirm-email" method="post" class="component_form_group">
+                    <div class="component_button_primary">
+                      <button type="submit" class="btn btn-big-primary btn-block">Confirm</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <br>
+            {% endif %}
+            
+             <br>
+             </div>
+             </div> 
+            <div class="well ">
+<form action="notifications" method="post" class="component_form_group"> 
+        <div class="form-group">
+            <label for="telegram" class="control-label">Telegram Username</label>
+            <input type="text" class="form-control" id="telegram" name="telegram" value="{{ user['telegram'] }}"  {% if user['telegram'] %} readonly {% endif %} required>
+        </div>
+        {% if not user['telegram']  %}
+         <div class="component_button_primary">
+        <button type="submit" class="btn btn-primary btn-block">Update</button>
+        </div>
+        {% endif %}
+</form>
+
+
+                {% if settings['telegram_botid'] %}
+                
+                <h5>Telegram Notifications</h5>
+                <a target="_blank" href="https://t.me/{{ settings['telegram_botid'] }}" 
+                   class="btn btn-primary btn-block">Confirm</a>
+                <small>
+                  If Telegram is not installed, you will be redirected to the download page.
+                  <a href="https://telegram.org/dl" target="_blank">Download Telegram</a>
+                </small>
+
+                <br>   {%endif%}
+               </div> 
+                 <br>  
+                                                     <div class="well ">
+                                                            <form action="" method="post">
+                        <div class="table-bg component_table ">
+                            <div class="table-wr table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Notification</th>
+                            <th>Email</th>
+                           {% if settings['telegram_botid'] %}  <th>Telegram</th>   {%endif%}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>API key changed</td>
+                            <td>
+                              <input type="hidden" name="email_api" value="0">
+                              <span class="component_checkbox">
+                                <div class="form-group__checkbox">
+                                  <label class="form-group__checkbox-label" data-toggle="tooltip" title="Receive email notifications.">
+                                    <input type="checkbox" name="email_api" value="1" {% if notifications["email_api"] == 1 %}checked{% endif %}>
+                                    <span class="checkmark"></span>
+                                  </label>
+                                </div>
+                              </span>
+                            </td>
+                            {% if settings['telegram_botid'] %}
+                            <td>
+                              <input type="hidden" name="telegram_api" value="0">
+                              <span class="component_checkbox">
+                                <div class="form-group__checkbox">
+                                  <label class="form-group__checkbox-label" data-toggle="tooltip" title="Receive telegram notifications.">
+                                    <input type="checkbox" name="telegram_api" value="1" {% if notifications["telegram_api"] == 1 %}checked{% endif %}>
+                                    <span class="checkmark"></span>
+                                  </label>
+                                </div>
+                              </span>
+                            </td>
+                            {%endif%}
+                          </tr>
+                          <tr>
+                            <td>New message</td>
+                            <td>
+                              <input type="hidden" name="email_message" value="0">
+                              <span class="component_checkbox">
+                                <div class="form-group__checkbox">
+                                  <label class="form-group__checkbox-label" data-toggle="tooltip" title="Receive email notifications.">
+                                    <input type="checkbox" name="email_message" value="1" {% if notifications["email_message"] == 1 %}checked{% endif %}>
+                                    <span class="checkmark"></span>
+                                  </label>
+                                </div>
+                              </span>
+                            </td> {% if settings['telegram_botid'] %}
+                            <td>
+                              <input type="hidden" name="telegram_message" value="0">
+                              <span class="component_checkbox">
+                                <div class="form-group__checkbox">
+                                  <label class="form-group__checkbox-label" data-toggle="tooltip" title="Receive telegram notifications.">
+                                    <input type="checkbox" name="telegram_message" value="1" {% if notifications["telegram_message"] == 1 %}checked{% endif %}>
+                                    <span class="checkmark"></span>
+                                  </label>
+                                </div>
+                              </span>
+                            </td>   {%endif%}
+                          </tr>
+                          <tr>
+                            <td colspan="3">
+                              <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                              <div class="component_button_primary">
+                                <button type="submit" class="btn btn-primary btn-block">Save changes</button>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </form>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'footer.twig' %}
