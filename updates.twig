@@ -28,8 +28,17 @@
   }
   .service-chip {
     font-size: 0.7rem; font-weight: 600;
-    padding: 3px 9px; border-radius: 6px; white-space: nowrap;
+    padding: 3px 9px; border-radius: 6px;
     background: var(--color-hover-bg); color: var(--color-text);
+    display: inline-block;
+    max-width: 100%;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  .feed-message {
+    word-break: break-word;
+    overflow-wrap: anywhere;
   }
   .log-id-tag {
     font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;
@@ -43,10 +52,6 @@
 </style>
 
 <div class="min-vh-100 pb-5" style="background-color: var(--color-bg); color: var(--color-text);">
-
-  <!-- ══════════════════════════════════════════
-       HERO HEADER
-  ══════════════════════════════════════════ -->
   <div style="background: var(--color-accent); position: relative; overflow: hidden;">
 
     <!-- Decorative circles -->
@@ -133,10 +138,6 @@
       </div>
     </div>
   </div>
-
-  <!-- ══════════════════════════════════════════
-       MAIN CONTENT
-  ══════════════════════════════════════════ -->
   <div class="container-fluid px-3 px-md-5 mt-4">
 
     <!-- Content Text Top -->
@@ -250,7 +251,7 @@
             </div>
 
             <!-- Alert message -->
-            <p class="mb-0 fw-semibold"
+            <p class="mb-0 fw-semibold feed-message"
                style="font-size:0.9rem;color:var(--color-text);line-height:1.5;">
               {{ log["serviceapi_alert"] }}
             </p>
