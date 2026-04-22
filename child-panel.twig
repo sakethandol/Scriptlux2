@@ -1,277 +1,823 @@
 {% include 'header.twig' %}
 
-<div class="container">
-	<div class="row">
+<style>
+  html { scroll-behavior: smooth; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .page-link { transition: all 0.18s ease; }
+  .panel-row { transition: background 0.15s ease, transform 0.15s ease; }
+  .panel-row:hover { background: var(--color-hover-bg) !important; transform: translateX(3px); }
+  .form-control:focus, .form-select:focus {
+    border-color: var(--color-accent) !important;
+    box-shadow: 0 0 0 3px var(--color-border) !important;
+    background-color: var(--color-accent-contrast) !important;
+  }
+  .feature-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 10px 28px var(--color-border) !important; }
+  .input-icon-wrap { position: relative; }
+  .input-icon-wrap .form-control { padding-left: 42px; }
+  .input-icon-wrap .field-icon {
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-accent); opacity: 0.45; font-size: 0.8rem; pointer-events: none;
+  }
+  .pw-toggle {
+    position: absolute; right: 12px; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none; padding: 0;
+    color: var(--color-accent); opacity: 0.45; cursor: pointer; font-size: 0.8rem;
+  }
+  .pw-toggle:hover { opacity: 0.85; }
+  .ns-tag {
+    display: inline-block; font-size: 0.68rem; font-weight: 600;
+    padding: 3px 8px; border-radius: 6px; margin-bottom: 3px;
+    background: var(--color-hover-bg); color: var(--color-text);
+  }
+  .feature-a {
+    background: var(--color-text);
+    border-color: rgba(214,255,246,0.08) !important;
+  }
+  .feature-a .feature-icon {
+    background: rgba(214,255,246,0.08);
+    color: var(--color-accent-contrast);
+  }
+  .feature-a .feature-title,
+  .feature-a .feature-desc {
+    color: var(--color-bg);
+  }
+  .feature-b {
+    background: var(--color-accent-contrast);
+    border-color: var(--color-border) !important;
+  }
+  .feature-b .feature-icon {
+    background: var(--color-hover-bg);
+    color: var(--color-accent);
+  }
+  .feature-b .feature-title,
+  .feature-b .feature-desc {
+    color: var(--color-text);
+  }
+  @media (max-width: 576px) {
+    .hero-title { font-size: 1.3rem; }
+    .feature-grid > div:nth-child(1) .feature-card,
+    .feature-grid > div:nth-child(4) .feature-card { background: var(--color-text) !important; }
+    .feature-grid > div:nth-child(1) .feature-icon,
+    .feature-grid > div:nth-child(4) .feature-icon { background: rgba(214,255,246,0.08) !important; color: var(--color-accent-contrast) !important; }
+    .feature-grid > div:nth-child(1) .feature-title,
+    .feature-grid > div:nth-child(1) .feature-desc,
+    .feature-grid > div:nth-child(4) .feature-title,
+    .feature-grid > div:nth-child(4) .feature-desc { color: var(--color-bg) !important; }
+    .feature-grid > div:nth-child(2) .feature-card,
+    .feature-grid > div:nth-child(3) .feature-card { background: var(--color-accent-contrast) !important; }
+    .feature-grid > div:nth-child(2) .feature-icon,
+    .feature-grid > div:nth-child(3) .feature-icon { background: var(--color-hover-bg) !important; color: var(--color-accent) !important; }
+    .feature-grid > div:nth-child(2) .feature-title,
+    .feature-grid > div:nth-child(2) .feature-desc,
+    .feature-grid > div:nth-child(3) .feature-title,
+    .feature-grid > div:nth-child(3) .feature-desc { color: var(--color-text) !important; }
+  }
+</style>
 
-	{% if contentText is not empty %}
-	<div class="col-md-12">
-		<div class="well ">
-			{{ contentText }}
-		</div>
-	</div>
-{% endif %}
-		<div class="col-md-12">
-			{% if error %}
-				<div class="alert alert-dismissible alert-danger">
-					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					{{ errorText }}
-				</div>
-			{% endif %}
-			{% if success  %}
-				<div class="alert alert-dismissible alert-success">
-					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					{{ successText  }}
-				</div>
-			{% endif %}
+<div class="min-vh-100 pb-5" style="background-color: var(--color-bg); color: var(--color-text);">
+  <div style="background: var(--color-accent); position: relative; overflow: hidden;">
+    <div style="position:absolute;top:-80px;right:-80px;width:260px;height:260px;
+                border-radius:50%;background:rgba(214,255,246,0.05);pointer-events:none;"></div>
+    <div style="position:absolute;bottom:-60px;left:80px;width:180px;height:180px;
+                border-radius:50%;background:rgba(214,255,246,0.04);pointer-events:none;"></div>
 
-			{% if data["childpanel"]["success"] == 1 %}
-				<div class="alert alert-dismissible alert-success">
-					<strong>
-						Child Id :
-					</strong>
-					{{ data['childpanel']['id'] }}
-					<br>
-					<strong>
-						Service:
-					</strong>
-					{{ data['childpanel']['service'] }}
-					<br>
-					<strong>
-						Domain:
-					</strong>
-					{{ data['childpanel']['link'] }}
-					<br>
-					<strong>
-						Quantity:
-					</strong>
-					{{ data['childpanel']['quantity'] }}
-					<br>
-					<strong>
-						Charge:
-					</strong>
+    <div class="container-fluid px-3 px-md-5 py-5">
+      <div class="row align-items-center g-4">
 
-					{{(data['childpanel']['price'] * curr_conversion_price)|number_format(settings["rates_rounding"], '.', ',')}}
-					<br>
-				</div>
-			{% endif %}
+        <div class="col-12 col-md-7">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div style="width:52px;height:52px;border-radius:14px;
+                        background:rgba(214,255,246,0.12);
+                        display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-server" style="color:var(--color-accent-contrast);font-size:1.3rem;"></i>
+            </div>
+            <div>
+              <p class="mb-0 fw-semibold"
+                 style="color:var(--color-accent-contrast);opacity:0.5;
+                        font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;">
+                Management
+              </p>
+              <h1 class="hero-title fw-bold mb-0"
+                  style="color:var(--color-accent-contrast);letter-spacing:-0.5px;font-size:1.75rem;">
+                Child Panel
+              </h1>
+            </div>
+          </div>
+          <p style="color:var(--color-accent-contrast);opacity:0.5;
+                    font-size:0.85rem;max-width:460px;line-height:1.6;">
+            Create and manage your child panels. Each panel gets its own domain, credentials, and currency settings.
+          </p>
+          <div class="d-flex flex-wrap gap-2 mt-3">
+            <span style="display:inline-flex;align-items:center;gap:7px;font-size:0.72rem;
+                         font-weight:600;padding:6px 14px;border-radius:50px;
+                         background:rgba(214,255,246,0.1);color:var(--color-accent-contrast);">
+              <i class="fas fa-globe" style="font-size:0.7rem;opacity:0.75;"></i> Custom Domain
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:7px;font-size:0.72rem;
+                         font-weight:600;padding:6px 14px;border-radius:50px;
+                         background:rgba(214,255,246,0.1);color:var(--color-accent-contrast);">
+              <i class="fas fa-coins" style="font-size:0.7rem;opacity:0.75;"></i> Multi Currency
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:7px;font-size:0.72rem;
+                         font-weight:600;padding:6px 14px;border-radius:50px;
+                         background:rgba(214,255,246,0.1);color:var(--color-accent-contrast);">
+              <i class="fas fa-sync-alt" style="font-size:0.7rem;opacity:0.75;"></i> Auto Renewal
+            </span>
+          </div>
+        </div>
 
-			{% if data["childpanel"]["success"] == 2 %}
-				<div class="alert alert-dismissible alert-success">
-					<strong>
-						Order Id:
-					</strong>
-					{{ data['childpanel']['id'] }}
-					<br>
-					<strong>
-						Child Panel Renewed Successfully</strong>
-				</div>
-			{% endif %}
+        <div class="col-12 col-md-5">
+          <div class="p-4 rounded-4"
+               style="background:rgba(214,255,246,0.07);border:1px solid rgba(214,255,246,0.12);">
+            <p class="mb-2 fw-semibold"
+               style="color:var(--color-accent-contrast);opacity:0.45;
+                      font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;">
+              Panel Price
+            </p>
+            <p class="mb-0 fw-bold" style="color:var(--color-accent-contrast);font-size:2rem;line-height:1;">
+              {{ convert_currency(settings['childpanel_price']) }}
+            </p>
+            <p class="mb-0 mt-1 small" style="color:var(--color-accent-contrast);opacity:0.4;font-size:0.75rem;">
+              per month · renews automatically
+            </p>
+          </div>
+        </div>
 
-
-			<div class="well" id="tab-add">
-				<form name="contact-form" action="{{ site['url'] }}/child-panel" method="post" id="contact-form">
-					<div class="form-group">
-						<label for="Domain">{{lang["childpanel.domain"]}}</label>
-						<input type="text" class="form-control" name="domain" placeholder="Domain" required>
-					</div>
-					<div class="alert alert-info " id="orderNote">
-						<p class="help-block" style="margin-bottom: 5px">{{lang["childpanel.nameserver.message"]}}</p>
-					</div>
-
-
-					<div class="form-group">
-
-						<label class="Domain" for="currency">{{lang["childpanel.currency"]}}</label>
-
-						<select class="form-control" name="currency" required>
-							{% for currencyCode,data in currenciesDataforChild %}
-								<option value="{{currencyCode}}">{{data["name"]}}
-									-
-									{{currencyCode}}
-									-
-									{{data["symbol"]}}</option>
-							{% endfor %}
-						</select>
-					</div>
-
-					<div class="form-group">
-						<label for="exampleInputEmail1">Admin Email
-						<span data-toggle="tooltip" data-placement="top" title="Please use a valid email address. This email address will be used to send you important information about your child panel.">
-							<i class="fa fa-question-circle"></i>
-						</label>
-						<input type="text" class="form-control" name="admin_email" placeholder="Admin email" value="{{ user['email'] }}">
-					
-					</div>
-
-					<div class="form-group">
-						<label for="exampleInputEmail1">{{lang["childpanel.username"]}}</label>
-						<input type="text" class="form-control" name="username" placeholder="Username" required>
-					</div>
-
-					<div class="form-group">
-
-						<label class="control-label" for="orderpanelform-password">{{lang["childpanel.password"]}}</label>
-						<input type="password" class="form-control" name="password" placeholder="Password" required>
-					</div>
-
-
-					<div class="form-group">
-
-						<label class="control-label" for="orderpanelform-password">{{lang["childpanel.confirm_password"]}}</label>
-						<input type="password" class="form-control" name="password_confirm" placeholder="Password" required>
-					</div>
-
-
-					<div class="form-group">
-						<label for="charge" class="control-label">{{ lang["neworder.charge"] }}</label>
-						<input type="text" class="form-control" value="{{convert_currency(settings['childpanel_price'])}}" readonly>
-					</div>
-						<input type="hidden" name="crsf_token" value="{{ csrf_token() }}">
-					<button type="submit" class="btn btn-primary" name="submit" value="Submit" id="submit_form">{{lang["childpanel.place_order"]}}</button>
-
-				</form>
-			</div>
-			<div class="response_msg"></div>
-		</div>
-	 <div class="col-md-12">
-		<div class="well ">
-			<div class="table-responsive custom-table">
-								<table class="table ">
-									<thead>
-										<tr>
-											<th>{{lang["childpanel.id"]}}</th>
-											<th>{{lang["childpanel.domain"]}}</th>
-											<th>Nameservers</th>
-											<th>{{lang["childpanel.currency"]}}</th>
-											<th class="width-40">{{lang["childpanel.username"]}}</th>
-											<th class="nowrap">{{lang["childpanel.status"]}}</th>
-											<th class="nowrap">{{lang["childpanel.created"]}}</th>
-											<th class="nowrap">{{lang["childpanel.last.renewed"]}}</th>
-											<th class="nowrap">{{lang["childpanel.action"]}}</th>
-											<th></th>
-											<th></th>
-										</tr>
-									</thead>
-									<tbody>
-
-										{% for logs in chilpanel_logs %}
-											<tr>
-												<td>{{ logs['id'] }}</td>
-												<td>{{ logs['domain'] }}</td>
-												<td>
-													{% if logs['nameservers'] is empty %}
-														Not Assigned Yet
-													{% else %}
-													{% set ns = logs['nameservers']|split(',') %}
-													{% for ns in ns %}
-														{{ ns }}<br>
-													{% endfor %}
-													{% endif %}
-												</td>
-												<td>{{ logs['currency'] }}</td>
-												<td class="width-40">{{ logs['child_username'] }}</td>
-												<td class="nowrap">{{ logs['status']|capitalize }}</td>
-												<td class="nowrap">{{ show_date(logs['created_at']) }}</td>
-												<td class="nowrap">{{ show_date(logs['last_renew']) }}</td>
-
-
-												<td class="nowrap">
-
-												{% if logs["status"] != "active" %}
-									{% set expiry =  '-' %}
-								{% else %}
-									{% set expiry =  logs["last_renew"]|date_modify("+30 day")|date('Y-m-d H:i:s') %}
-										{% set renewalDate =  logs["last_renew"]|date_modify("+29 day")|date('Y-m-d H:i:s') %}
-								{% endif %}
-																				{% if (logs['status'] == "frozen" or logs['status'] == "active")  and   renewalDate <= "now"|date('Y-m-d H:i:s') %}
-																						<a href="{{site["url"]}}/child-panel/renew/{{ logs['id'] }}">
-																							<button class="btn btn-primary">Renew</button>
-																						</a>
-																					{% endif %}
-
-												</td>
-												 {% if logs["status"] == "active" %}<td>
-  <button type="button" class="btn btn-primary changePasswordChildPanel" data-toggle="modal"  data-target="#changePasswordModal" data-id="{{ logs["id"] }}" >
-    Change Password
-  </button>
-</td>
-<td>
-  <a href="https://{{ logs['domain'] }}/admin" target="_blank">
-																							<button class="btn btn-primary">Admin area</button>
-																						</a>
-</td>{% endif %}
-
-
-
-											</tr>
-										{% endfor %}
-
-									</tbody>
-								</table>
-							</div>
-		</div>
-
-
-
-		{% if contentTextBottom is not empty %}
-	<div class="col-md-12">
-		<div class="well ">
-			{{ contentTextBottom }}
-		</div>
-	</div>
-{% endif %}
-	</div>
-
-
-
-
-	</div>
-</div></div> 
-<!-- Change Password Modal -->
-<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordLabel">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="changePasswordLabel">Change Password</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			<span aria-hidden="true">&times;</span>
-			</button>
       </div>
-      <div class="modal-body">
-        <!-- Error Messages -->
-        <div id="changePasswordErrors" class="alert alert-danger" style="display: none;"></div>
+    </div>
+  </div>
 
+  <div class="container-fluid px-3 px-md-5 mt-4">
+    <div class="row g-2 g-md-3 mb-4 feature-grid">
+      {% set features = [
+        {'icon': 'fa-globe',      'title': 'Custom Domain',    'desc': 'Host your panel on any domain you own with full nameserver control.'},
+        {'icon': 'fa-coins',      'title': 'Multi Currency',   'desc': 'Set any supported currency for your panel independently.'},
+        {'icon': 'fa-user-shield','title': 'Admin Access',     'desc': 'Full admin credentials with a dedicated admin area URL.'},
+        {'icon': 'fa-sync-alt',   'title': 'Easy Renewal',     'desc': 'Renew your panel monthly with a single click when due.'}
+      ] %}
+      {% for f in features %}
+        <div class="col-6 col-lg-3">
+          <div class="feature-card {% if loop.index is odd %}feature-a{% else %}feature-b{% endif %} h-100 p-3 p-md-4 rounded-4"
+               style="border:1px solid;">
+            <div class="feature-icon" style="width:38px;height:38px;border-radius:11px;
+                        display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+              <i class="fas {{ f.icon }}" style="font-size:0.88rem;"></i>
+            </div>
+            <h6 class="feature-title fw-bold mb-1" style="font-size:0.82rem;">{{ f.title }}</h6>
+            <p class="feature-desc mb-0 small" style="opacity:0.5;line-height:1.45;font-size:0.74rem;">
+              {{ f.desc }}
+            </p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {# {% if contentText is not empty %}
+      <div class="d-flex align-items-start gap-3 p-4 mb-4"
+           style="background:var(--color-accent-contrast);border-left:4px solid var(--color-accent);
+                  border-radius:14px;border:1px solid var(--color-border);">
+        <i class="fas fa-info-circle mt-1" style="color:var(--color-accent);opacity:0.6;flex-shrink:0;"></i>
+        <div style="font-size:0.88rem;line-height:1.6;">{{ contentText }}</div>
+      </div>
+    {% endif %} #}
+
+ 
+    {% if error %}
+      <div class="d-flex align-items-start gap-3 p-3 mb-4 rounded-3"
+           style="background:rgba(220,53,69,0.08);border-left:4px solid #dc3545;border:1px solid rgba(220,53,69,0.15);">
+        <i class="fas fa-exclamation-circle mt-1" style="color:#dc3545;flex-shrink:0;font-size:0.85rem;"></i>
+        <div style="font-size:0.85rem;color:#dc3545;flex-grow:1;">{{ errorText }}</div>
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"
+                style="font-size:0.65rem;opacity:0.5;"></button>
+      </div>
+    {% endif %}
+
+    {% if success %}
+      <div class="d-flex align-items-start gap-3 p-3 mb-4 rounded-3"
+           style="background:rgba(25,135,84,0.08);border-left:4px solid #198754;border:1px solid rgba(25,135,84,0.15);">
+        <i class="fas fa-check-circle mt-1" style="color:#198754;flex-shrink:0;font-size:0.85rem;"></i>
+        <div style="font-size:0.85rem;color:#198754;flex-grow:1;">{{ successText }}</div>
+        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"
+                style="font-size:0.65rem;opacity:0.5;"></button>
+      </div>
+    {% endif %}
+
+    <!-- Child Panel Created Alert -->
+    {% if data["childpanel"]["success"] == 1 %}
+      <div class="p-4 mb-4 rounded-4"
+           style="background:rgba(25,135,84,0.07);border:1px solid rgba(25,135,84,0.2);">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(25,135,84,0.15);
+                      display:flex;align-items:center;justify-content:center;">
+            <i class="fas fa-check-circle" style="color:#198754;font-size:0.9rem;"></i>
+          </div>
+          <h6 class="fw-bold mb-0" style="color:#198754;">Child Panel Created Successfully</h6>
+        </div>
+        <div class="row g-2">
+          {% for label, val in {
+            'Child ID':  data['childpanel']['id'],
+            'Service':   data['childpanel']['service'],
+            'Domain':    data['childpanel']['link'],
+            'Quantity':  data['childpanel']['quantity'],
+            'Charge':    (data['childpanel']['price'] * curr_conversion_price)|number_format(settings["rates_rounding"], '.', ',')
+          } %}
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="p-2 rounded-3"
+                   style="background:rgba(25,135,84,0.08);border:1px solid rgba(25,135,84,0.15);">
+                <p class="mb-0" style="font-size:0.65rem;color:#198754;opacity:0.7;
+                           text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">{{ label }}</p>
+                <p class="mb-0 fw-bold" style="font-size:0.85rem;color:#198754;">{{ val }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if data["childpanel"]["success"] == 2 %}
+      <div class="d-flex align-items-start gap-3 p-3 mb-4 rounded-3"
+           style="background:rgba(25,135,84,0.08);border-left:4px solid #198754;border:1px solid rgba(25,135,84,0.15);">
+        <i class="fas fa-check-circle mt-1" style="color:#198754;flex-shrink:0;"></i>
+        <div style="font-size:0.85rem;color:#198754;">
+          <strong>Order ID:</strong> {{ data['childpanel']['id'] }} &nbsp;·&nbsp;
+          <strong>Child Panel Renewed Successfully</strong>
+        </div>
+      </div>
+    {% endif %}
+
+
+    <div class="row g-4 mb-5">
+      <div class="col-12 col-lg-8">
+        <div class="p-4 p-md-5 rounded-4"
+             style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+
+          <!-- Form header -->
+          <div class="d-flex align-items-center gap-3 mb-4 pb-3"
+               style="border-bottom:1px solid var(--color-border);">
+            <div style="width:42px;height:42px;border-radius:11px;background:var(--color-hover-bg);
+                        display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-plus-circle" style="color:var(--color-accent);font-size:0.95rem;"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-0" style="color:var(--color-text);font-size:1rem;">
+                Create New Child Panel
+              </h5>
+              <p class="mb-0 small" style="color:var(--color-text);opacity:0.45;font-size:0.75rem;">
+                Fill in all fields to set up your new panel
+              </p>
+            </div>
+          </div>
+
+          <form name="contact-form" action="{{ site['url'] }}/child-panel"
+                method="post" id="contact-form">
+
+            <div class="row g-3">
+
+              <!-- Domain -->
+              <div class="col-12">
+                <label class="fw-semibold d-block mb-2"
+                       style="font-size:0.82rem;color:var(--color-text);letter-spacing:0.3px;">
+                  <i class="fas fa-globe me-2" style="opacity:0.45;font-size:0.75rem;"></i>
+                  {{ lang["childpanel.domain"] }}
+                </label>
+                <div class="input-icon-wrap">
+                  <i class="fas fa-globe field-icon"></i>
+                  <input type="text" class="form-control border rounded-3 py-3"
+                         name="domain" placeholder="yourdomain.com" required
+                         style="background:var(--color-bg);color:var(--color-text);
+                                border-color:var(--color-border) !important;font-size:0.88rem;">
+                </div>
+              </div>
+
+              <!-- Nameserver info -->
+              <div class="col-12">
+                <div class="d-flex align-items-start gap-2 p-3 rounded-3"
+                     style="background:rgba(2,132,199,0.07);border:1px solid rgba(2,132,199,0.15);">
+                  <i class="fas fa-info-circle mt-1" style="color:#0284c7;font-size:0.8rem;flex-shrink:0;"></i>
+                  <p class="mb-0 small" style="color:#0284c7;font-size:0.8rem;line-height:1.5;">
+                    {{ lang["childpanel.nameserver.message"] }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Currency -->
+              <div class="col-12 col-md-6">
+                <label class="fw-semibold d-block mb-2"
+                       style="font-size:0.82rem;color:var(--color-text);letter-spacing:0.3px;">
+                  <i class="fas fa-coins me-2" style="opacity:0.45;font-size:0.75rem;"></i>
+                  {{ lang["childpanel.currency"] }}
+                </label>
+                <select class="form-select border rounded-3 py-3 px-3" name="currency" required
+                        style="background:var(--color-bg);color:var(--color-text);
+                               border-color:var(--color-border) !important;font-size:0.88rem;">
+                  {% for currencyCode, data in currenciesDataforChild %}
+                    <option value="{{ currencyCode }}">
+                      {{ data["name"] }} - {{ currencyCode }} - {{ data["symbol"] }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Admin Email -->
+              <div class="col-12 col-md-6">
+                <label class="fw-semibold d-block mb-2"
+                       style="font-size:0.82rem;color:var(--color-text);letter-spacing:0.3px;">
+                  <i class="fas fa-envelope me-2" style="opacity:0.45;font-size:0.75rem;"></i>
+                  Admin Email
+                  <span data-bs-toggle="tooltip" data-bs-placement="top"
+                        title="Please use a valid email. Used for important notifications about your panel."
+                        style="cursor:help;">
+                    <i class="fa fa-question-circle ms-1"
+                       style="opacity:0.4;font-size:0.7rem;"></i>
+                  </span>
+                </label>
+                <div class="input-icon-wrap">
+                  <i class="fas fa-envelope field-icon"></i>
+                  <input type="text" class="form-control border rounded-3 py-3"
+                         name="admin_email" placeholder="admin@yourdomain.com"
+                         value="{{ user['email'] }}"
+                         style="background:var(--color-bg);color:var(--color-text);
+                                border-color:var(--color-border) !important;font-size:0.88rem;">
+                </div>
+              </div>
+
+              <!-- Username -->
+              <div class="col-12 col-md-6">
+                <label class="fw-semibold d-block mb-2"
+                       style="font-size:0.82rem;color:var(--color-text);letter-spacing:0.3px;">
+                  <i class="fas fa-user me-2" style="opacity:0.45;font-size:0.75rem;"></i>
+                  {{ lang["childpanel.username"] }}
+                </label>
+                <div class="input-icon-wrap">
+                  <i class="fas fa-user field-icon"></i>
+                  <input type="text" class="form-control border rounded-3 py-3"
+                         name="username" placeholder="admin_username" required
+                         style="background:var(--color-bg);color:var(--color-text);
+                                border-color:var(--color-border) !important;font-size:0.88rem;">
+                </div>
+              </div>
+
+              <!-- Charge (readonly) -->
+              <div class="col-12 col-md-6">
+                <label class="fw-semibold d-block mb-2"
+                       style="font-size:0.82rem;color:var(--color-text);letter-spacing:0.3px;">
+                  <i class="fas fa-tag me-2" style="opacity:0.45;font-size:0.75rem;"></i>
+                  {{ lang["neworder.charge"] }}
+                </label>
+                <div class="input-icon-wrap">
+                  <i class="fas fa-tag field-icon"></i>
+                  <input type="text" class="form-control border rounded-3 py-3"
+                         value="{{ convert_currency(settings['childpanel_price']) }}" readonly
+                         style="background:var(--color-hover-bg);color:var(--color-text);
+                                border-color:var(--color-border) !important;
+                                font-size:0.88rem;font-weight:700;cursor:not-allowed;">
+                </div>
+              </div>
+
+              <!-- Password -->
+              <div class="col-12 col-md-6">
+                <label class="fw-semibold d-block mb-2"
+                       style="font-size:0.82rem;color:var(--color-text);letter-spacing:0.3px;">
+                  <i class="fas fa-lock me-2" style="opacity:0.45;font-size:0.75rem;"></i>
+                  {{ lang["childpanel.password"] }}
+                </label>
+                <div class="input-icon-wrap" style="position:relative;">
+                  <i class="fas fa-lock field-icon"></i>
+                  <input type="password" class="form-control border rounded-3 py-3"
+                         name="password" placeholder="••••••••" required
+                         id="createPwd"
+                         style="background:var(--color-bg);color:var(--color-text);
+                                border-color:var(--color-border) !important;font-size:0.88rem;
+                                padding-right:42px;">
+                  <button type="button" class="pw-toggle" onclick="togglePwd('createPwd',this)">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Confirm Password -->
+              <div class="col-12 col-md-6">
+                <label class="fw-semibold d-block mb-2"
+                       style="font-size:0.82rem;color:var(--color-text);letter-spacing:0.3px;">
+                  <i class="fas fa-lock me-2" style="opacity:0.45;font-size:0.75rem;"></i>
+                  {{ lang["childpanel.confirm_password"] }}
+                </label>
+                <div class="input-icon-wrap" style="position:relative;">
+                  <i class="fas fa-lock field-icon"></i>
+                  <input type="password" class="form-control border rounded-3 py-3"
+                         name="password_confirm" placeholder="••••••••" required
+                         id="createPwdConfirm"
+                         style="background:var(--color-bg);color:var(--color-text);
+                                border-color:var(--color-border) !important;font-size:0.88rem;
+                                padding-right:42px;">
+                  <button type="button" class="pw-toggle" onclick="togglePwd('createPwdConfirm',this)">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+
+            </div><!-- /row g-3 -->
+
+            <input type="hidden" name="crsf_token" value="{{ csrf_token() }}">
+
+            <div class="mt-4 pt-3" style="border-top:1px solid var(--color-border);">
+              <button type="submit" class="btn fw-bold px-5 py-3"
+                      name="submit" value="Submit" id="submit_form"
+                      style="background:var(--color-accent);color:var(--color-accent-contrast);
+                             border-radius:12px;font-size:0.88rem;letter-spacing:0.3px;border:none;">
+                <i class="fas fa-server me-2" style="font-size:0.8rem;"></i>
+                {{ lang["childpanel.place_order"] }}
+              </button>
+            </div>
+
+          </form>
+          <div class="response_msg"></div>
+        </div>
+      </div>
+
+      <!-- Side info panel -->
+      <div class="col-12 col-lg-4">
+        <div class="p-4 rounded-4 h-100"
+             style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+          <div class="d-flex align-items-center gap-2 mb-4 pb-3"
+               style="border-bottom:1px solid var(--color-border);">
+            <div style="width:38px;height:38px;border-radius:10px;background:var(--color-hover-bg);
+                        display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-lightbulb" style="color:var(--color-accent);font-size:0.85rem;"></i>
+            </div>
+            <h6 class="fw-bold mb-0" style="color:var(--color-text);font-size:0.9rem;">
+              Setup Tips
+            </h6>
+          </div>
+
+          {% set tips = [
+            {'icon':'fa-globe',       'tip':'Point your domain nameservers to ours before creating the panel.'},
+            {'icon':'fa-key',         'tip':'Use a strong password — minimum 8 characters with letters and numbers.'},
+            {'icon':'fa-envelope',    'tip':'Use a real admin email for account recovery and notifications.'},
+            {'icon':'fa-sync-alt',    'tip':'Panels renew monthly. You will be notified 1 day before expiry.'},
+            {'icon':'fa-headset',     'tip':'Having issues? Contact our support team anytime 24/7.'}
+          ] %}
+          <div class="d-flex flex-column gap-3">
+            {% for t in tips %}
+              <div class="d-flex align-items-start gap-3">
+                <div style="width:32px;height:32px;border-radius:8px;background:var(--color-hover-bg);
+                            display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <i class="fas {{ t.icon }}"
+                     style="color:var(--color-accent);font-size:0.72rem;"></i>
+                </div>
+                <p class="mb-0 small"
+                   style="color:var(--color-text);opacity:0.6;font-size:0.78rem;line-height:1.5;padding-top:6px;">
+                  {{ t.tip }}
+                </p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="d-flex align-items-center gap-3 mb-3">
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--color-accent);
+                  display:flex;align-items:center;justify-content:center;">
+        <i class="fas fa-th-list" style="color:var(--color-accent-contrast);font-size:0.9rem;"></i>
+      </div>
+      <div>
+        <h5 class="fw-bold mb-0" style="color:var(--color-text);font-size:1rem;">Your Child Panels</h5>
+        <p class="mb-0 small" style="color:var(--color-text);opacity:0.45;font-size:0.75rem;">
+          Manage, renew, and access your active panels
+        </p>
+      </div>
+    </div>
+
+    <div class="rounded-4 overflow-hidden mb-4"
+         style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+      <div class="table-responsive">
+        <table class="table mb-0 align-middle">
+          <thead>
+            <tr style="background:var(--color-accent);">
+              {% for h in [
+                lang["childpanel.id"],
+                lang["childpanel.domain"],
+                'Nameservers',
+                lang["childpanel.currency"],
+                lang["childpanel.username"],
+                lang["childpanel.status"],
+                lang["childpanel.created"],
+                lang["childpanel.last.renewed"],
+                lang["childpanel.action"],
+                '', ''
+              ] %}
+                <th class="px-3 py-3 border-0 fw-semibold"
+                    style="color:var(--color-accent-contrast);font-size:0.7rem;
+                           letter-spacing:0.6px;text-transform:uppercase;white-space:nowrap;">
+                  {{ h }}
+                </th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+
+            {% for logs in chilpanel_logs %}
+
+              {% if logs['status'] == 'active' %}
+                {% set status_bg = 'rgba(25,135,84,0.1)' %}
+                {% set status_color = '#198754' %}
+                {% set status_icon = 'fa-check-circle' %}
+              {% elseif logs['status'] == 'frozen' %}
+                {% set status_bg = 'rgba(2,132,199,0.1)' %}
+                {% set status_color = '#0284c7' %}
+                {% set status_icon = 'fa-snowflake' %}
+              {% elseif logs['status'] == 'pending' %}
+                {% set status_bg = 'rgba(217,119,6,0.1)' %}
+                {% set status_color = '#d97706' %}
+                {% set status_icon = 'fa-clock' %}
+              {% else %}
+                {% set status_bg = 'rgba(108,117,125,0.1)' %}
+                {% set status_color = '#6c757d' %}
+                {% set status_icon = 'fa-dot-circle' %}
+              {% endif %}
+
+              <tr class="panel-row" style="border-bottom:1px solid var(--color-border);">
+
+                <!-- ID -->
+                <td class="px-3 py-3">
+                  <span class="fw-bold rounded-2 px-2 py-1"
+                        style="background:var(--color-hover-bg);color:var(--color-accent);font-size:0.75rem;">
+                    #{{ logs['id'] }}
+                  </span>
+                </td>
+
+                <!-- Domain -->
+                <td class="px-3 py-3">
+                  <span class="fw-semibold" style="font-size:0.83rem;color:var(--color-text);">
+                    {{ logs['domain'] }}
+                  </span>
+                </td>
+
+                <!-- Nameservers -->
+                <td class="px-3 py-3">
+                  {% if logs['nameservers'] is empty %}
+                    <span style="font-size:0.75rem;color:var(--color-text);opacity:0.4;">Not Assigned Yet</span>
+                  {% else %}
+                    {% set ns = logs['nameservers']|split(',') %}
+                    {% for ns in ns %}
+                      <span class="ns-tag d-block">{{ ns }}</span>
+                    {% endfor %}
+                  {% endif %}
+                </td>
+
+                <!-- Currency -->
+                <td class="px-3 py-3">
+                  <span class="fw-semibold" style="font-size:0.82rem;">{{ logs['currency'] }}</span>
+                </td>
+
+                <!-- Username -->
+                <td class="px-3 py-3">
+                  <span style="font-size:0.82rem;font-family:monospace;color:var(--color-text);">
+                    {{ logs['child_username'] }}
+                  </span>
+                </td>
+
+                <!-- Status -->
+                <td class="px-3 py-3">
+                  <span style="display:inline-flex;align-items:center;gap:5px;
+                               font-size:0.7rem;font-weight:700;letter-spacing:0.4px;
+                               padding:4px 10px;border-radius:50px;
+                               background:{{ status_bg }};color:{{ status_color }};">
+                    <i class="fas {{ status_icon }}" style="font-size:0.6rem;"></i>
+                    {{ logs['status']|capitalize }}
+                  </span>
+                </td>
+
+                <!-- Created -->
+                <td class="px-3 py-3">
+                  <span style="font-size:0.78rem;color:var(--color-text);opacity:0.55;white-space:nowrap;">
+                    <i class="fas fa-calendar-alt me-1" style="font-size:0.65rem;"></i>
+                    {{ show_date(logs['created_at']) }}
+                  </span>
+                </td>
+
+                <!-- Last Renewed -->
+                <td class="px-3 py-3">
+                  <span style="font-size:0.78rem;color:var(--color-text);opacity:0.55;white-space:nowrap;">
+                    <i class="fas fa-sync-alt me-1" style="font-size:0.65rem;"></i>
+                    {{ show_date(logs['last_renew']) }}
+                  </span>
+                </td>
+
+                <!-- Renew Action -->
+                <td class="px-3 py-3">
+                  {% if logs["status"] != "active" %}
+                    {% set expiry = '-' %}
+                  {% else %}
+                    {% set expiry = logs["last_renew"]|date_modify("+30 day")|date('Y-m-d H:i:s') %}
+                    {% set renewalDate = logs["last_renew"]|date_modify("+29 day")|date('Y-m-d H:i:s') %}
+                  {% endif %}
+                  {% if (logs['status'] == "frozen" or logs['status'] == "active") and renewalDate <= "now"|date('Y-m-d H:i:s') %}
+                    <a href="{{ site["url"] }}/child-panel/renew/{{ logs['id'] }}" class="text-decoration-none">
+                      <button class="btn btn-sm fw-bold px-3 py-2"
+                              style="background:var(--color-accent);color:var(--color-accent-contrast);
+                                     border-radius:8px;font-size:0.72rem;border:none;white-space:nowrap;">
+                        <i class="fas fa-sync-alt me-1" style="font-size:0.65rem;"></i> Renew
+                      </button>
+                    </a>
+                  {% endif %}
+                </td>
+
+                <!-- Change Password -->
+                {% if logs["status"] == "active" %}
+                  <td class="px-3 py-3">
+                    <button type="button"
+                            class="btn btn-sm fw-bold px-3 py-2 changePasswordChildPanel"
+                            data-bs-toggle="modal" data-bs-target="#changePasswordModal"
+                            data-toggle="modal" data-target="#changePasswordModal"
+                            data-id="{{ logs['id'] }}"
+                            style="background:var(--color-hover-bg);color:var(--color-accent);
+                                   border:1px solid var(--color-border);border-radius:8px;
+                                   font-size:0.72rem;white-space:nowrap;">
+                      <i class="fas fa-key me-1" style="font-size:0.65rem;"></i> Change Password
+                    </button>
+                  </td>
+                  <td class="px-3 py-3">
+                    <a href="https://{{ logs['domain'] }}/admin" target="_blank" class="text-decoration-none">
+                      <button class="btn btn-sm fw-bold px-3 py-2"
+                              style="background:var(--color-hover-bg);color:var(--color-accent);
+                                     border:1px solid var(--color-border);border-radius:8px;
+                                     font-size:0.72rem;white-space:nowrap;">
+                        <i class="fas fa-external-link-alt me-1" style="font-size:0.65rem;"></i> Admin Area
+                      </button>
+                    </a>
+                  </td>
+                {% else %}
+                  <td></td><td></td>
+                {% endif %}
+
+              </tr>
+            {% endfor %}
+
+            <!-- Empty state -->
+            {% if chilpanel_logs is empty %}
+              <tr>
+                <td colspan="11" class="text-center py-5">
+                  <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle"
+                       style="width:68px;height:68px;background:var(--color-hover-bg);">
+                    <i class="fas fa-server"
+                       style="font-size:1.5rem;color:var(--color-accent);opacity:0.35;"></i>
+                  </div>
+                  <p class="fw-bold mb-1" style="color:var(--color-text);font-size:0.9rem;">
+                    No child panels yet
+                  </p>
+                  <p class="small mb-0" style="color:var(--color-text);opacity:0.45;">
+                    Create your first panel using the form above.
+                  </p>
+                </td>
+              </tr>
+            {% endif %}
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Content Text Bottom -->
+    {% if contentTextBottom is not empty %}
+      <div class="d-flex align-items-start gap-3 p-4 mt-2"
+           style="background:var(--color-accent-contrast);border-left:4px solid var(--color-accent);
+                  border-radius:14px;border:1px solid var(--color-border);">
+        <i class="fas fa-info-circle mt-1" style="color:var(--color-accent);opacity:0.6;flex-shrink:0;"></i>
+        <div style="font-size:0.88rem;line-height:1.6;">{{ contentTextBottom }}</div>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+
+<div class="modal fade" id="changePasswordModal" tabindex="-1"
+     aria-labelledby="changePasswordLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 overflow-hidden"
+         style="background:var(--color-accent-contrast);">
+
+      <!-- Modal Header -->
+      <div class="modal-header border-0 px-4 pt-4 pb-3"
+           style="background:var(--color-accent);">
+        <div class="d-flex align-items-center gap-3">
+          <div style="width:38px;height:38px;border-radius:10px;
+                      background:rgba(214,255,246,0.12);
+                      display:flex;align-items:center;justify-content:center;">
+            <i class="fas fa-key" style="color:var(--color-accent-contrast);font-size:0.9rem;"></i>
+          </div>
+          <div>
+            <h5 class="modal-title fw-bold mb-0"
+                id="changePasswordLabel"
+                style="color:var(--color-accent-contrast);font-size:1rem;">
+              Change Password
+            </h5>
+            <p class="mb-0 small" style="color:var(--color-accent-contrast);opacity:0.5;font-size:0.72rem;">
+              Update your child panel admin password
+            </p>
+          </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white ms-auto"
+                data-bs-dismiss="modal" data-dismiss="modal"                aria-label="Close" style="font-size:0.75rem;opacity:0.6;"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body px-4 py-4">
+
+        <div id="changePasswordErrors" class="d-flex align-items-start gap-2 p-3 mb-3 rounded-3"
+             style="background:rgba(220,53,69,0.08);border:1px solid rgba(220,53,69,0.15);display:none !important;">
+          <i class="fas fa-exclamation-circle mt-1" style="color:#dc3545;font-size:0.8rem;flex-shrink:0;"></i>
+          <span style="font-size:0.83rem;color:#dc3545;"></span>
+        </div>
 
         <form id="changePasswordForm" method="post" action="/child-panel" class="component_form_group">
           <input type="hidden" name="child_id" id="changePasswordLogId">
-          <div class="form-group">
-            <label for="newPassword" class="control-label">New Password</label>
-            <div style="position: relative;">
-              <input type="password" id="newPassword" name="new_password" class="form-control" placeholder="Enter new password" required>
-              <button type="button" class="btn btn-light btn-sm" id="toggleNewPassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+
+          <!-- New Password -->
+          <div class="mb-3">
+            <label class="fw-semibold d-block mb-2"
+                   style="font-size:0.82rem;color:var(--color-text);letter-spacing:0.3px;">
+              <i class="fas fa-lock me-2" style="opacity:0.45;font-size:0.75rem;"></i>
+              New Password
+            </label>
+            <div style="position:relative;">
+              <input type="password" id="newPassword" name="new_password"
+                     class="form-control border rounded-3 py-3"
+                     placeholder="Enter new password" required
+                     style="background:var(--color-bg);color:var(--color-text);
+                            border-color:var(--color-border) !important;
+                            font-size:0.88rem;padding-right:44px;">
+              <button type="button" class="pw-toggle" id="toggleNewPassword"
+                      onclick="togglePwd('newPassword',this)">
                 <i class="fas fa-eye"></i>
               </button>
             </div>
           </div>
-          
-          <div class="form-group">
-            <label for="confirmPassword" class="control-label">Confirm Password</label>
-            <div style="position: relative;">
-              <input type="password" id="confirmPassword" name="confirm_password" class="form-control" placeholder="Confirm new password" required>
-              <button type="button" class="btn btn-light btn-sm" id="toggleConfirmPassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+
+          <!-- Confirm Password -->
+          <div class="mb-1">
+            <label class="fw-semibold d-block mb-2"
+                   style="font-size:0.82rem;color:var(--color-text);letter-spacing:0.3px;">
+              <i class="fas fa-lock me-2" style="opacity:0.45;font-size:0.75rem;"></i>
+              Confirm Password
+            </label>
+            <div style="position:relative;">
+              <input type="password" id="confirmPassword" name="confirm_password"
+                     class="form-control border rounded-3 py-3"
+                     placeholder="Confirm new password" required
+                     style="background:var(--color-bg);color:var(--color-text);
+                            border-color:var(--color-border) !important;
+                            font-size:0.88rem;padding-right:44px;">
+              <button type="button" class="pw-toggle" id="toggleConfirmPassword"
+                      onclick="togglePwd('confirmPassword',this)">
                 <i class="fas fa-eye"></i>
               </button>
             </div>
           </div>
+
         </form>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary"  data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" onclick="submitChangePassword()">Change Password</button>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer border-0 px-4 pb-4 pt-2 gap-2">
+        <button type="button" class="btn fw-semibold px-4 py-2"
+                data-bs-dismiss="modal" data-dismiss="modal"
+                style="background:var(--color-hover-bg);color:var(--color-text);
+                       border-radius:10px;font-size:0.83rem;border:1px solid var(--color-border);">
+          <i class="fas fa-times me-1" style="font-size:0.75rem;"></i> Cancel
+        </button>
+        <button type="button" class="btn fw-bold px-4 py-2"
+                onclick="submitChangePassword()"
+                style="background:var(--color-accent);color:var(--color-accent-contrast);
+                       border-radius:10px;font-size:0.83rem;border:none;">
+          <i class="fas fa-check me-1" style="font-size:0.75rem;"></i> Change Password
+        </button>
       </div>
+
     </div>
   </div>
 </div>
 
+<script>
+  function togglePwd(id, btn) {
+    var input = document.getElementById(id);
+    var icon = btn.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+  }
+</script>
 
 {% include 'footer.twig' %}

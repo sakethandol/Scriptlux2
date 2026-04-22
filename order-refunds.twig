@@ -1,101 +1,507 @@
 {% include 'header.twig' %}
 
-<section id="service_update">
+<style>
+  html { scroll-behavior: smooth; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .page-link { transition: all 0.18s ease; }
+  .refund-row { transition: background 0.15s ease, transform 0.15s ease; }
+  .refund-row:hover { background: var(--color-hover-bg) !important; transform: translateX(3px); }
+  .form-control:focus {
+    border-color: var(--color-accent) !important;
+    box-shadow: 0 0 0 3px var(--color-border) !important;
+  }
+  .stat-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px var(--color-border) !important; }
+  .copy-id {
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .copy-id:hover { opacity: 0.7; }
+  .copy-toast {
+    position: fixed;
+    top: 22px;
+    left: 50%;
+    transform: translate(-50%, -20px) scale(0.96);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1060;
+    background: var(--color-text);
+    color: var(--color-bg);
+    border-radius: 999px;
+    padding: 12px 22px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.35px;
+    box-shadow: 0 14px 34px rgba(20, 40, 29, 0.28);
+    transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .copy-toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  .copy-toast.error {
+    background: #dc3545;
+    color: #fff;
+  }
+  @media (max-width: 576px) {
+    .hero-title { font-size: 1.3rem; }
+    .stat-grid .col { min-width: 140px; }
+    .copy-toast { padding: 10px 16px; font-size: 0.84rem; }
+  }
+</style>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-2">
-            <div class="card mt-3 extra-space-bottom">
-                <div class="card-body">
-                    <form action="" method="get">
-                        <div class="input-group">
-                            <input type="text" name="search" class="form-control" value="{{ search }}" placeholder="Search...">
-                            <span class="input-group-btn">
-                                <button type="submit" class="btn btn-default">
-                                    <i class="fa fa-search" aria-hidden="true"></i>
-                                </button>
-                            </span>
-                        </div>
-                    </form>
-                </div>
+<div class="min-vh-100 pb-5" style="background-color: var(--color-bg); color: var(--color-text);">
+  <div id="copyToast" class="copy-toast" role="status" aria-live="polite">Copied!</div>
+
+  <!-- ══════════════════════════════════════════
+       HERO HEADER
+  ══════════════════════════════════════════ -->
+  <div style="background: var(--color-accent); position: relative; overflow: hidden;">
+
+    <!-- Decorative circles -->
+    <div style="position:absolute;top:-70px;right:-70px;width:240px;height:240px;
+                border-radius:50%;background:rgba(214,255,246,0.05);pointer-events:none;"></div>
+    <div style="position:absolute;bottom:-50px;left:80px;width:160px;height:160px;
+                border-radius:50%;background:rgba(214,255,246,0.04);pointer-events:none;"></div>
+
+    <div class="container-fluid px-3 px-md-5 py-5">
+      <div class="row align-items-center g-4">
+
+        <!-- Title -->
+        <div class="col-12 col-md-6">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div style="width:52px;height:52px;border-radius:14px;
+                        background:rgba(214,255,246,0.12);
+                        display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-undo-alt" style="color:var(--color-accent-contrast);font-size:1.3rem;"></i>
             </div>
+            <div>
+              <p class="mb-0 fw-semibold"
+                 style="color:var(--color-accent-contrast);opacity:0.5;
+                        font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;">
+                Billing
+              </p>
+              <h1 class="hero-title fw-bold mb-0"
+                  style="color:var(--color-accent-contrast);letter-spacing:-0.5px;font-size:1.75rem;">
+                Order Refunds
+              </h1>
+            </div>
+          </div>
+          <p style="color:var(--color-accent-contrast);opacity:0.5;
+                    font-size:0.85rem;max-width:380px;line-height:1.6;">
+            Track all refunds processed on your account. Each entry includes the order, amount, reason, and timestamp.
+          </p>
+
+          <!-- Trust badges -->
+          <div class="d-flex flex-wrap gap-2 mt-3">
+            <span style="display:inline-flex;align-items:center;gap:7px;
+                         font-size:0.72rem;font-weight:600;padding:6px 14px;border-radius:50px;
+                         background:rgba(214,255,246,0.1);color:var(--color-accent-contrast);">
+              <i class="fas fa-shield-alt" style="font-size:0.7rem;opacity:0.75;"></i>
+              Verified Refunds
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:7px;
+                         font-size:0.72rem;font-weight:600;padding:6px 14px;border-radius:50px;
+                         background:rgba(214,255,246,0.1);color:var(--color-accent-contrast);">
+              <i class="fas fa-bolt" style="font-size:0.7rem;opacity:0.75;"></i>
+              Auto Processed
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:7px;
+                         font-size:0.72rem;font-weight:600;padding:6px 14px;border-radius:50px;
+                         background:rgba(214,255,246,0.1);color:var(--color-accent-contrast);">
+              <i class="fas fa-lock" style="font-size:0.7rem;opacity:0.75;"></i>
+              Secure
+            </span>
+          </div>
         </div>
+
+        <!-- Search -->
+        <div class="col-12 col-md-6">
+          <form action="" method="get">
+            <p class="mb-2 fw-semibold"
+               style="color:var(--color-accent-contrast);opacity:0.4;
+                      font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;">
+              Search Refunds
+            </p>
+            <div class="input-group" style="border-radius:14px;overflow:hidden;
+                         border:1.5px solid rgba(214,255,246,0.15);">
+              <span class="input-group-text border-0 ps-3"
+                    style="background:rgba(214,255,246,0.08);">
+                <i class="fa fa-search"
+                   style="color:var(--color-accent-contrast);opacity:0.45;font-size:0.85rem;"></i>
+              </span>
+              <input type="text" name="search"
+                     class="form-control border-0 shadow-none py-3"
+                     value="{{ search }}"
+                     placeholder="Order ID, amount or reason..."
+                     style="background:rgba(214,255,246,0.08);
+                            color:var(--color-accent-contrast);
+                            font-size:0.9rem;caret-color:var(--color-accent-contrast);">
+              <button type="submit" class="btn border-0 px-4 fw-bold"
+                      style="background:var(--color-accent-contrast);color:var(--color-accent);
+                             font-size:0.82rem;border-radius:0 12px 12px 0;">
+                <i class="fa fa-search me-1"></i> Find
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       STAT SUMMARY CARDS
+  ══════════════════════════════════════════ -->
+  <div class="container-fluid px-3 px-md-5">
+    <div class="row g-3 mt-0" style="margin-top:-28px !important;">
+
+      <div class="col-6 col-lg-3">
+        <div class="stat-card p-4 rounded-4 shadow-sm"
+             style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+          <div class="d-flex align-items-center gap-3">
+            <div style="width:44px;height:44px;border-radius:12px;background:var(--color-hover-bg);
+                        display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-undo-alt" style="color:var(--color-accent);font-size:1rem;"></i>
+            </div>
+            <div>
+              <p class="mb-0 small fw-semibold"
+                 style="color:var(--color-text);opacity:0.5;font-size:0.7rem;
+                        letter-spacing:0.5px;text-transform:uppercase;">
+                Total Refunds
+              </p>
+              <p class="mb-0 fw-bold" style="color:var(--color-text);font-size:1.2rem;">
+                {{ refunds|length }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-lg-3">
+        <div class="stat-card p-4 rounded-4 shadow-sm"
+             style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+          <div class="d-flex align-items-center gap-3">
+            <div style="width:44px;height:44px;border-radius:12px;background:var(--color-hover-bg);
+                        display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-shield-alt" style="color:var(--color-accent);font-size:1rem;"></i>
+            </div>
+            <div>
+              <p class="mb-0 small fw-semibold"
+                 style="color:var(--color-text);opacity:0.5;font-size:0.7rem;
+                        letter-spacing:0.5px;text-transform:uppercase;">
+                Auto Verified
+              </p>
+              <p class="mb-0 fw-bold" style="color:var(--color-text);font-size:1.2rem;">
+                100%
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-lg-3">
+        <div class="stat-card p-4 rounded-4 shadow-sm"
+             style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+          <div class="d-flex align-items-center gap-3">
+            <div style="width:44px;height:44px;border-radius:12px;background:var(--color-hover-bg);
+                        display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-bolt" style="color:var(--color-accent);font-size:1rem;"></i>
+            </div>
+            <div>
+              <p class="mb-0 small fw-semibold"
+                 style="color:var(--color-text);opacity:0.5;font-size:0.7rem;
+                        letter-spacing:0.5px;text-transform:uppercase;">
+                Processing
+              </p>
+              <p class="mb-0 fw-bold" style="color:var(--color-text);font-size:1.2rem;">
+                Instant
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-lg-3">
+        <div class="stat-card p-4 rounded-4 shadow-sm"
+             style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+          <div class="d-flex align-items-center gap-3">
+            <div style="width:44px;height:44px;border-radius:12px;background:var(--color-hover-bg);
+                        display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-headset" style="color:var(--color-accent);font-size:1rem;"></i>
+            </div>
+            <div>
+              <p class="mb-0 small fw-semibold"
+                 style="color:var(--color-text);opacity:0.5;font-size:0.7rem;
+                        letter-spacing:0.5px;text-transform:uppercase;">
+                Support
+              </p>
+              <p class="mb-0 fw-bold" style="color:var(--color-text);font-size:1.2rem;">
+                24 / 7
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       REFUNDS TABLE
+  ══════════════════════════════════════════ -->
+  <div class="container-fluid px-3 px-md-5 mt-4">
+
+    <!-- Section heading -->
+    <div class="d-flex align-items-center justify-content-between gap-3 mb-3 flex-wrap">
+      <div class="d-flex align-items-center gap-3">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--color-accent);
+                    display:flex;align-items:center;justify-content:center;">
+          <i class="fas fa-list-ul" style="color:var(--color-accent-contrast);font-size:0.9rem;"></i>
+        </div>
+        <div>
+          <h5 class="fw-bold mb-0" style="color:var(--color-text);font-size:1rem;">
+            Refund History
+          </h5>
+          <p class="mb-0 small" style="color:var(--color-text);opacity:0.45;font-size:0.75rem;">
+            All refunds processed on your account
+          </p>
+        </div>
+      </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
+    <!-- Table card -->
+    <div class="rounded-4 overflow-hidden"
+         style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+      <div class="table-responsive">
+        <table class="table mb-0 align-middle">
 
-<thead>
-<tr>
-<th>Order ID</th>
-<th>Amount</th>
-<th>Reason</th>
-<th>Refunded At</th>
-</tr>
-</thead>
-<tbody>
+          <thead>
+            <tr style="background:var(--color-accent);">
+              <th class="px-4 py-3 border-0 fw-semibold"
+                  style="color:var(--color-accent-contrast);font-size:0.72rem;
+                         letter-spacing:0.6px;text-transform:uppercase;white-space:nowrap;">
+                Order ID
+              </th>
+              <th class="px-3 py-3 border-0 fw-semibold"
+                  style="color:var(--color-accent-contrast);font-size:0.72rem;
+                         letter-spacing:0.6px;text-transform:uppercase;white-space:nowrap;">
+                Amount
+              </th>
+              <th class="px-3 py-3 border-0 fw-semibold"
+                  style="color:var(--color-accent-contrast);font-size:0.72rem;
+                         letter-spacing:0.6px;text-transform:uppercase;white-space:nowrap;">
+                Reason
+              </th>
+              <th class="px-3 py-3 border-0 fw-semibold"
+                  style="color:var(--color-accent-contrast);font-size:0.72rem;
+                         letter-spacing:0.6px;text-transform:uppercase;white-space:nowrap;">
+                Refunded At
+              </th>
+            </tr>
+          </thead>
 
-{% for refund in refunds %}
-<tr>
-<td><a style="cursor:pointer;" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Click to copy!">{{ refund['order_id'] }} </td>
-<td>{{ convert_currency(refund['refund_amount']) }}</td>
-<td>{{ refund['refund_reason'] }}</td>
-<td>{{ show_date(refund['refund_created_at'])|date("m/d/Y \\a\\t H:i A") }}</td>
-</tr>
+          <tbody>
+            {% for refund in refunds %}
+              <tr class="refund-row"
+                  style="border-bottom:1px solid var(--color-border);">
 
-{% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            {% if pagination["count"] > 1 %}
-                <ul class="pagination">
-                    {% if pagination["current"] != 1 %}
-                        <li>
-                            <a href="order-refunds/{{ pagination["previous"] }}{% if search %}?search={{ search }}{% endif %}" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
+                <!-- Order ID -->
+                <td class="px-4 py-3">
+                  <span class="copy-id"
+                        onclick="copyRefundOrderId('{{ refund['order_id'] }}')"
+                        style="text-decoration:none;"
+                        data-toggle="tooltip" data-placement="bottom" title="Click to copy!">
+                    <span class="d-inline-flex align-items-center gap-1 fw-bold rounded-2 px-2 py-1"
+                          style="background:var(--color-hover-bg);color:var(--color-accent);font-size:0.75rem;">
+                      <i class="fas fa-hashtag" style="font-size:0.6rem;opacity:0.7;"></i>
+                      {{ refund['order_id'] }}
+                      <i class="fas fa-copy ms-1" style="font-size:0.55rem;opacity:0.45;"></i>
+                    </span>
+                  </span>
+                </td>
+
+                <!-- Amount -->
+                <td class="px-3 py-3">
+                  <span class="d-inline-flex align-items-center gap-1 fw-bold"
+                        style="color:#198754;font-size:0.88rem;">
+                    <i class="fas fa-arrow-circle-up" style="font-size:0.65rem;opacity:0.75;"></i>
+                    {{ convert_currency(refund['refund_amount']) }}
+                  </span>
+                </td>
+
+                <!-- Reason -->
+                <td class="px-3 py-3" style="max-width:260px;">
+                  <span class="d-flex align-items-center gap-2"
+                        style="font-size:0.83rem;color:var(--color-text);">
+                    <i class="fas fa-comment-alt"
+                       style="color:var(--color-accent);opacity:0.4;font-size:0.65rem;flex-shrink:0;"></i>
+                    <span class="text-truncate" title="{{ refund['refund_reason'] }}">
+                      {{ refund['refund_reason'] }}
+                    </span>
+                  </span>
+                </td>
+
+                <!-- Date -->
+                <td class="px-3 py-3">
+                  <span class="d-flex align-items-center gap-2"
+                        style="font-size:0.8rem;color:var(--color-text);opacity:0.6;white-space:nowrap;">
+                    <i class="fas fa-calendar-alt"
+                       style="color:var(--color-accent);font-size:0.65rem;opacity:0.7;"></i>
+                    {{ show_date(refund['refund_created_at'])|date("m/d/Y \\a\\t H:i A") }}
+                  </span>
+                </td>
+
+              </tr>
+            {% endfor %}
+
+            <!-- Empty state -->
+            {% if refunds is empty %}
+              <tr>
+                <td colspan="4" class="text-center py-5">
+                  <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle"
+                       style="width:68px;height:68px;background:var(--color-hover-bg);">
+                    <i class="fas fa-receipt"
+                       style="font-size:1.5rem;color:var(--color-accent);opacity:0.35;"></i>
+                  </div>
+                  <p class="fw-bold mb-1" style="color:var(--color-text);font-size:0.9rem;">
+                    No refunds found
+                  </p>
+                  <p class="small mb-0" style="color:var(--color-text);opacity:0.45;">
+                    {% if search %}
+                      No results for "<strong>{{ search }}</strong>". Try a different search.
+                    {% else %}
+                      Your refund history will appear here once processed.
                     {% endif %}
-
-                    {% set r, l = 3, 3 %}
-                    {% if pagination['current'] == 1 %}
-                        {% set r = 7 %}
-                    {% endif %}
-                    {% if pagination['current'] == 2 %}
-                        {% set r = 5 %}
-                    {% endif %}
-                    {% if pagination['current'] >= pagination['count'] %}
-                        {% set l = 5 %}
-                    {% endif %}
-
-                    {% for page in 1..pagination["count"] %}
-                        {% if page >= (pagination['current']-l) and page <= (pagination['current']+r) %}
-                            <li {% if page == pagination['current'] %} class="active" {% endif %}>
-                                <a href="order-refunds/{{ page }}{% if search %}?search={{ search }}{% endif %}">{{ page }}</a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if pagination['current'] < pagination['count'] %}
-                        <li>
-                            <a href="order-refunds/{{ pagination['next'] }}{% if search %}?search={{ search }}{% endif %}" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
+                  </p>
+                </td>
+              </tr>
             {% endif %}
-        </div>
+
+          </tbody>
+        </table>
+      </div>
     </div>
+
+    <!-- ══════ PAGINATION ══════ -->
+    {% if pagination["count"] > 1 %}
+    <nav class="mt-4" aria-label="Refunds pagination">
+      <ul class="pagination justify-content-center flex-wrap gap-2 mb-0">
+
+        {% if pagination["current"] != 1 %}
+          <li class="page-item">
+            <a class="page-link border-0 rounded-circle shadow-sm
+                       d-flex align-items-center justify-content-center fw-bold"
+               href="order-refunds/{{ pagination["previous"] }}{% if search %}?search={{ search }}{% endif %}"
+               aria-label="Previous"
+               style="width:40px;height:40px;
+                      background:var(--color-accent-contrast);color:var(--color-text);">
+              <i class="fas fa-chevron-left" style="font-size:0.7rem;"></i>
+            </a>
+          </li>
+        {% endif %}
+
+        {% set r, l = 3, 3 %}
+        {% if pagination['current'] == 1 %}{% set r = 7 %}{% endif %}
+        {% if pagination['current'] == 2 %}{% set r = 5 %}{% endif %}
+        {% if pagination['current'] >= pagination['count'] %}{% set l = 5 %}{% endif %}
+
+        {% for page in 1..pagination["count"] %}
+          {% if page >= (pagination['current']-l) and page <= (pagination['current']+r) %}
+            <li class="page-item">
+              <a class="page-link border-0 rounded-circle shadow-sm
+                         d-flex align-items-center justify-content-center fw-bold"
+                 href="order-refunds/{{ page }}{% if search %}?search={{ search }}{% endif %}"
+                 style="width:40px;height:40px;font-size:0.85rem;
+                        {% if page == pagination['current'] %}
+                          background:var(--color-accent);color:var(--color-accent-contrast);
+                        {% else %}
+                          background:var(--color-accent-contrast);color:var(--color-text);
+                        {% endif %}">
+                {{ page }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+
+        {% if pagination['current'] < pagination['count'] %}
+          <li class="page-item">
+            <a class="page-link border-0 rounded-circle shadow-sm
+                       d-flex align-items-center justify-content-center fw-bold"
+               href="order-refunds/{{ pagination['next'] }}{% if search %}?search={{ search }}{% endif %}"
+               aria-label="Next"
+               style="width:40px;height:40px;
+                      background:var(--color-accent-contrast);color:var(--color-text);">
+              <i class="fas fa-chevron-right" style="font-size:0.7rem;"></i>
+            </a>
+          </li>
+        {% endif %}
+
+      </ul>
+    </nav>
+    {% endif %}
+
+  </div>
 </div>
-</section>
+
+<script>
+  function showCopyTooltip(message, isError) {
+    var toast = document.getElementById('copyToast');
+    if (!toast) {
+      return;
+    }
+
+    toast.textContent = message;
+    toast.classList.remove('show', 'error');
+    void toast.offsetWidth;
+    if (isError) {
+      toast.classList.add('error');
+    }
+    toast.classList.add('show');
+
+    if (window._copyToastTimer) {
+      clearTimeout(window._copyToastTimer);
+    }
+
+    window._copyToastTimer = setTimeout(function () {
+      toast.classList.remove('show', 'error');
+    }, 1200);
+  }
+
+  function fallbackCopyText(text) {
+    var input = document.createElement('input');
+    input.value = text;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+  }
+
+  function copyRefundOrderId(orderId) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(orderId)
+        .then(function () {
+          showCopyTooltip('Copied!', false);
+        })
+        .catch(function () {
+          try {
+            fallbackCopyText(orderId);
+            showCopyTooltip('Copied!', false);
+          } catch (e) {
+            showCopyTooltip('Copy failed', true);
+          }
+        });
+      return;
+    }
+
+    try {
+      fallbackCopyText(orderId);
+      showCopyTooltip('Copied!', false);
+    } catch (e) {
+      showCopyTooltip('Copy failed', true);
+    }
+  }
+</script>
 
 {% include 'footer.twig' %}

@@ -1,129 +1,354 @@
 {% include 'header.twig' %}
 
-<div class="container-fluid">
+<style>
+  html { scroll-behavior: smooth; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .page-link { transition: all 0.18s ease; }
+  .feed-row { transition: transform 0.18s ease, box-shadow 0.18s ease; }
+  .feed-row:hover { transform: translateX(4px); box-shadow: 0 4px 20px var(--color-border) !important; }
 
-	<div class="row">
-		{% if contentText is not empty %}
-			<div class="col-md-12">
-				<div class="well ">
-					{{ contentText }}
-				</div>
-			</div>
-		{% endif %}
-		<div class="col-lg-12">
-			<ul class="nav nav-pills ">
-				<li class="pull-right search">
-					<form action="" method="get">
-						<div class="input-group">
-							<input type="text" name="search" class="form-control" value="{{ search }}" placeholder="Search Updates">
-							<span class="input-group-btn">
-								<button type="submit" class="btn btn-default">
-									<i class="fa fa-search" aria-hidden="true"></i>
-								</button>
-							</span>
-						</div>
-					</form>
-				</li>
+  .alert-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 0.85rem;
+  }
+  .feed-list { position: relative; }
+  .feed-list::before {
+    content: '';
+    position: absolute;
+    left: 52px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--color-border), transparent);
+    pointer-events: none;
+  }
+  .badge-alert {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.4px;
+    padding: 5px 12px; border-radius: 50px; white-space: nowrap;
+  }
+  .service-chip {
+    font-size: 0.7rem; font-weight: 600;
+    padding: 3px 9px; border-radius: 6px; white-space: nowrap;
+    background: var(--color-hover-bg); color: var(--color-text);
+  }
+  .log-id-tag {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;
+    color: var(--color-text); opacity: 0.35;
+  }
+  @media (max-width: 576px) {
+    .hero-title { font-size: 1.3rem; }
+    .feed-list::before { display: none; }
+    .feed-meta { flex-direction: column; align-items: flex-start !important; gap: 6px !important; }
+  }
+</style>
 
-			</ul>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-lg-12">
+<div class="min-vh-100 pb-5" style="background-color: var(--color-bg); color: var(--color-text);">
 
+  <!-- ══════════════════════════════════════════
+       HERO HEADER
+  ══════════════════════════════════════════ -->
+  <div style="background: var(--color-accent); position: relative; overflow: hidden;">
 
-			<div class="well well-float">
-				<table class="table ">
+    <!-- Decorative circles -->
+    <div style="position:absolute;top:-60px;right:-60px;width:220px;height:220px;
+                border-radius:50%;background:rgba(214,255,246,0.05);pointer-events:none;"></div>
+    <div style="position:absolute;bottom:-80px;right:140px;width:160px;height:160px;
+                border-radius:50%;background:rgba(214,255,246,0.04);pointer-events:none;"></div>
 
-					<thead>
-						<tr>
-							<th>{{ lang['services.id'] }}</th>
-							<th class="width-service-name">{{ lang['services.name'] }}</th>
+    <div class="container-fluid px-3 px-md-5 py-5">
+      <div class="row align-items-center g-4">
 
-							<th class="nowrap">{{ lang['service_log.update'] }}</th>
-							<th class="nowrap">{{ lang['service_log.date'] }}</th>
+        <!-- Title -->
+        <div class="col-12 col-md-6">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div style="width:52px;height:52px;border-radius:14px;
+                        background:rgba(214,255,246,0.1);
+                        display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-satellite-dish" style="color:var(--color-accent-contrast);font-size:1.3rem;"></i>
+            </div>
+            <div>
+              <p class="mb-0 fw-semibold"
+                 style="color:var(--color-accent-contrast);opacity:0.5;
+                        font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;">
+                Live Feed
+              </p>
+              <h1 class="hero-title fw-bold mb-0"
+                  style="color:var(--color-accent-contrast);letter-spacing:-0.5px;font-size:1.75rem;">
+                Service Updates
+              </h1>
+            </div>
+          </div>
+          <p style="color:var(--color-accent-contrast);opacity:0.5;
+                    font-size:0.85rem;max-width:360px;line-height:1.6;">
+            Real-time alerts and changes across all your active services.
+          </p>
 
+          <!-- Legend pills -->
+          <div class="d-flex flex-wrap gap-2 mt-3">
+            <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.5px;padding:4px 10px;
+                         border-radius:50px;background:rgba(220,53,69,0.25);color:#ff8a8a;">● Danger</span>
+            <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.5px;padding:4px 10px;
+                         border-radius:50px;background:rgba(25,135,84,0.25);color:#6dd4a1;">● Success</span>
+            <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.5px;padding:4px 10px;
+                         border-radius:50px;background:rgba(217,119,6,0.25);color:#fbbf24;">● Warning</span>
+            <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.5px;padding:4px 10px;
+                         border-radius:50px;background:rgba(2,132,199,0.25);color:#67c6f5;">● Info</span>
+            <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.5px;padding:4px 10px;
+                         border-radius:50px;background:rgba(79,70,229,0.25);color:#a5b4fc;">● Notice</span>
+          </div>
+        </div>
 
-						</tr>
-					</thead>
-					<tbody>
+        <!-- Search -->
+        <div class="col-12 col-md-6">
+          <form action="" method="get">
+            <p class="mb-2 fw-semibold"
+               style="color:var(--color-accent-contrast);opacity:0.4;
+                      font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;">
+              Search Updates
+            </p>
+            <div class="input-group"
+                 style="border-radius:14px;overflow:hidden;
+                        border:1.5px solid rgba(214,255,246,0.15);">
+              <span class="input-group-text border-0 ps-3"
+                    style="background:rgba(214,255,246,0.08);">
+                <i class="fa fa-search"
+                   style="color:var(--color-accent-contrast);opacity:0.45;font-size:0.85rem;"></i>
+              </span>
+              <input type="text" name="search"
+                     class="form-control border-0 shadow-none py-3"
+                     value="{{ search }}"
+                     placeholder="Service name, alert message..."
+                     style="background:rgba(214,255,246,0.08);
+                            color:var(--color-accent-contrast);
+                            font-size:0.9rem;caret-color:var(--color-accent-contrast);">
+              <button type="submit" class="btn border-0 px-4 fw-bold"
+                      style="background:var(--color-accent-contrast);color:var(--color-accent);
+                             font-size:0.82rem;letter-spacing:0.3px;border-radius:0 12px 12px 0;">
+                <i class="fa fa-search me-1"></i> Find
+              </button>
+            </div>
+          </form>
+        </div>
 
-						{% for log in service_logs %}
-							<tr>
-								<td>{{ log["id"] }}</td>
-								<td>{{ log["service_id"] }} - {{ log["service_name"] }}</td>
-								<td>
+      </div>
+    </div>
+  </div>
 
-									<button class="btn   {% if log[" alert_type"] == 1 %}
-																																																																								                             btn-danger {% elseif log[" alert_type"] == 2 %}  btn-success
-																																																																								                             {% elseif log[" alert_type"] == 3 %} btn-warning {% elseif log[" alert_type"] == 4 %} btn-info  {% elseif log[" alert_type"] == 5 %} btn-primary  {% else %} btn-black  {% endif %} ">
-										{{ log["serviceapi_alert"] }}
+  <!-- ══════════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════════ -->
+  <div class="container-fluid px-3 px-md-5 mt-4">
 
+    <!-- Content Text Top -->
+    {% if contentText is not empty %}
+      <div class="d-flex align-items-start gap-3 p-4 mb-4 shadow-sm"
+           style="background:var(--color-accent-contrast);
+                  border-left:4px solid var(--color-accent);
+                  border-radius:14px;border:1px solid var(--color-border);">
+        <i class="fas fa-info-circle mt-1"
+           style="color:var(--color-accent);opacity:0.6;flex-shrink:0;"></i>
+        <div style="font-size:0.88rem;line-height:1.6;color:var(--color-text);">
+          {{ contentText }}
+        </div>
+      </div>
+    {% endif %}
 
-									</button>
-								</td>
-								<td>{{ show_date(log["servicealert_date"]) }}</td>
+    <!-- ══════ ACTIVITY FEED ══════ -->
+    <div class="feed-list d-flex flex-column gap-3 ps-0 ps-md-3">
 
+      {% for log in service_logs %}
 
-							</tr>
-						{% endfor %}
-					</tbody>
+        {% if log["alert_type"] == 1 %}
+          {% set border_color = '#dc3545' %}
+          {% set icon_bg = 'rgba(220,53,69,0.12)' %}
+          {% set icon_color = '#dc3545' %}
+          {% set icon_name = 'fa-exclamation-circle' %}
+          {% set badge_bg = 'rgba(220,53,69,0.1)' %}
+          {% set badge_color = '#dc3545' %}
+          {% set type_label = 'Danger' %}
+        {% elseif log["alert_type"] == 2 %}
+          {% set border_color = '#198754' %}
+          {% set icon_bg = 'rgba(25,135,84,0.12)' %}
+          {% set icon_color = '#198754' %}
+          {% set icon_name = 'fa-check-circle' %}
+          {% set badge_bg = 'rgba(25,135,84,0.1)' %}
+          {% set badge_color = '#198754' %}
+          {% set type_label = 'Success' %}
+        {% elseif log["alert_type"] == 3 %}
+          {% set border_color = '#d97706' %}
+          {% set icon_bg = 'rgba(217,119,6,0.12)' %}
+          {% set icon_color = '#d97706' %}
+          {% set icon_name = 'fa-exclamation-triangle' %}
+          {% set badge_bg = 'rgba(217,119,6,0.1)' %}
+          {% set badge_color = '#d97706' %}
+          {% set type_label = 'Warning' %}
+        {% elseif log["alert_type"] == 4 %}
+          {% set border_color = '#0284c7' %}
+          {% set icon_bg = 'rgba(2,132,199,0.12)' %}
+          {% set icon_color = '#0284c7' %}
+          {% set icon_name = 'fa-info-circle' %}
+          {% set badge_bg = 'rgba(2,132,199,0.1)' %}
+          {% set badge_color = '#0284c7' %}
+          {% set type_label = 'Info' %}
+        {% elseif log["alert_type"] == 5 %}
+          {% set border_color = '#4f46e5' %}
+          {% set icon_bg = 'rgba(79,70,229,0.12)' %}
+          {% set icon_color = '#4f46e5' %}
+          {% set icon_name = 'fa-bell' %}
+          {% set badge_bg = 'rgba(79,70,229,0.1)' %}
+          {% set badge_color = '#4f46e5' %}
+          {% set type_label = 'Notice' %}
+        {% else %}
+          {% set border_color = 'var(--color-accent)' %}
+          {% set icon_bg = 'var(--color-hover-bg)' %}
+          {% set icon_color = 'var(--color-accent)' %}
+          {% set icon_name = 'fa-dot-circle' %}
+          {% set badge_bg = 'var(--color-hover-bg)' %}
+          {% set badge_color = 'var(--color-accent)' %}
+          {% set type_label = 'Update' %}
+        {% endif %}
 
-				</table>
-			</div>
+        <div class="feed-row d-flex align-items-start gap-3 p-3 p-md-4"
+             style="background:var(--color-accent-contrast);
+                    border:1px solid var(--color-border);
+                    border-left:4px solid {{ border_color }} !important;
+                    border-radius:16px;">
 
-			{% if pagination["count"] > 1 %}
-				<ul class="pagination">
+          <!-- Icon circle -->
+          <div class="alert-icon"
+               style="background:{{ icon_bg }};color:{{ icon_color }};margin-top:2px;">
+            <i class="fas {{ icon_name }}"></i>
+          </div>
 
-					{% if pagination["current"] != 1 %}
-						<li>
-							<a href="updates/{{ pagination[" previous"] }}{% if search %}?search={{ search }}{% endif %}" aria-label="Previous">
-								<span aria-hidden="true">&laquo;</span>
-							</a>
-						</li>
-					{% endif %}
+          <!-- Body -->
+          <div class="flex-grow-1" style="min-width:0;">
 
-					{% set r, l = 3, 3 %}
+            <!-- Meta row -->
+            <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap mb-2 feed-meta">
 
-					{% if pagination['current'] == 1 %}
-						{% set r = 7 %}
-					{% endif %}
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span class="log-id-tag">#{{ log["id"] }}</span>
 
-					{% if pagination['current'] == 2 %}
-						{% set r = 5 %}
-					{% endif %}
+                <span class="service-chip">
+                  {{ log["service_id"] }} — {{ log["service_name"] }}
+                </span>
 
-					{% if pagination['current'] >= pagination['count'] %}
-						{% set l = 5 %}
-					{% endif %}
+                <span class="badge-alert"
+                      style="background:{{ badge_bg }};color:{{ badge_color }};">
+                  <i class="fas {{ icon_name }} me-1" style="font-size:0.6rem;"></i>
+                  {{ type_label }}
+                </span>
+              </div>
 
-					{% for page in 1..pagination["count"] %}
-						{% if page >= (pagination['current']-l) and page <= (pagination['current']+r) %}
-							<li {% if page == pagination['current'] %} class="active" {% endif %}>
-								<a href="updates/{{ page }}{% if search %}?search={{ search }}{% endif %}">{{ page }}</a>
-							</li>
-							{%endif%}
-						{% endfor %}
+              <!-- Date -->
+              <span class="d-flex align-items-center gap-1 flex-shrink-0"
+                    style="font-size:0.72rem;color:var(--color-text);
+                           opacity:0.45;white-space:nowrap;">
+                <i class="fas fa-clock" style="font-size:0.6rem;"></i>
+                {{ show_date(log["servicealert_date"]) }}
+              </span>
+            </div>
 
-						{% if pagination['current'] < pagination['count'] %}
-							<li>
-								<a href="updates/{{ pagination['next'] }}{% if search %}?search={{ search }}{% endif %}" aria-label="Next">
-									<span aria-hidden="true">&raquo;</span>
-								</a>
-							</li>
-						{% endif %}
+            <!-- Alert message -->
+            <p class="mb-0 fw-semibold"
+               style="font-size:0.9rem;color:var(--color-text);line-height:1.5;">
+              {{ log["serviceapi_alert"] }}
+            </p>
 
-					</ul>
-				{% endif %}
+          </div>
+        </div>
 
-			</div>
-		</div>
-		{% if contentTextBottom is not empty %}
-	<div class="col-md-12">
-		<div class="well ">
-			{{ contentTextBottom }}
-		</div>
-	</div>
-{% endif %}
-	</div>
-</div>{% include 'footer.twig' %}
+      {% endfor %}
+
+      <!-- Empty State -->
+      {% if service_logs is empty %}
+        <div class="text-center py-5 my-3">
+          <div class="mx-auto mb-4 d-flex align-items-center justify-content-center rounded-circle"
+               style="width:72px;height:72px;background:var(--color-hover-bg);">
+            <i class="fas fa-satellite"
+               style="font-size:1.6rem;color:var(--color-accent);opacity:0.35;"></i>
+          </div>
+          <h5 class="fw-bold mb-1" style="color:var(--color-text);">No updates found</h5>
+          <p class="small mb-0" style="color:var(--color-text);opacity:0.45;">
+            Try adjusting your search or check back later.
+          </p>
+        </div>
+      {% endif %}
+
+    </div>
+
+    <!-- ══════ PAGINATION ══════ -->
+    {% if pagination["count"] > 1 %}
+    <nav class="mt-5" aria-label="Updates pagination">
+      <ul class="pagination justify-content-center flex-wrap gap-2 mb-0">
+
+        {% if pagination["current"] != 1 %}
+          <li class="page-item">
+            <a class="page-link border-0 rounded-circle shadow-sm d-flex align-items-center justify-content-center fw-bold"
+               href="updates/{{ pagination["previous"] }}{% if search %}?search={{ search }}{% endif %}"
+               aria-label="Previous"
+               style="width:40px;height:40px;
+                      background:var(--color-accent-contrast);
+                      color:var(--color-text);">
+              <i class="fas fa-chevron-left" style="font-size:0.7rem;"></i>
+            </a>
+          </li>
+        {% endif %}
+
+        {% set r, l = 3, 3 %}
+        {% if pagination['current'] == 1 %}{% set r = 7 %}{% endif %}
+        {% if pagination['current'] == 2 %}{% set r = 5 %}{% endif %}
+        {% if pagination['current'] >= pagination['count'] %}{% set l = 5 %}{% endif %}
+
+        {% for page in 1..pagination["count"] %}
+          {% if page >= (pagination['current']-l) and page <= (pagination['current']+r) %}
+            <li class="page-item">
+              <a class="page-link border-0 rounded-circle shadow-sm d-flex align-items-center justify-content-center fw-bold"
+                 href="updates/{{ page }}{% if search %}?search={{ search }}{% endif %}"
+                 style="width:40px;height:40px;font-size:0.85rem;
+                        {% if page == pagination['current'] %}
+                          background:var(--color-accent);color:var(--color-accent-contrast);
+                        {% else %}
+                          background:var(--color-accent-contrast);color:var(--color-text);
+                        {% endif %}">
+                {{ page }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+
+        {% if pagination['current'] < pagination['count'] %}
+          <li class="page-item">
+            <a class="page-link border-0 rounded-circle shadow-sm d-flex align-items-center justify-content-center fw-bold"
+               href="updates/{{ pagination['next'] }}{% if search %}?search={{ search }}{% endif %}"
+               aria-label="Next"
+               style="width:40px;height:40px;
+                      background:var(--color-accent-contrast);
+                      color:var(--color-text);">
+              <i class="fas fa-chevron-right" style="font-size:0.7rem;"></i>
+            </a>
+          </li>
+        {% endif %}
+
+      </ul>
+    </nav>
+    {% endif %}
+
+    <!-- Content Text Bottom -->
+    {% if contentTextBottom is not empty %}
+      <div class="d-flex align-items-start gap-3 p-4 mt-4 shadow-sm"
+           style="background:var(--color-accent-contrast);
+                  border-left:4px solid var(--color-accent);
+                  border-radius:14px;border:1px solid var(--color-border);">
+        <i class="fas fa-info-circle mt-1"
+           style="color:var(--color-accent);opacity:0.6;flex-shrink:0;"></i>
+        <div style="font-size:0.88rem;line-height:1.6;color:var(--color-text);">
+          {{ contentTextBottom }}
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% include 'footer.twig' %}

@@ -1,207 +1,564 @@
 {% include 'header.twig' %}
 
+<style>
+  html { scroll-behavior: smooth; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .page-link { transition: all 0.18s ease; }
+  .feature-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px var(--color-border) !important; }
+  .txn-row { transition: background 0.15s ease; }
+  .txn-row:hover { background: var(--color-hover-bg) !important; }
+  .form-control:focus, .form-select:focus {
+    border-color: var(--color-accent) !important;
+    box-shadow: 0 0 0 3px var(--color-border) !important;
+  }
+  .payment-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23231651' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px !important;
+  }
+  @media (max-width: 576px) {
+    .hero-title { font-size: 1.4rem; }
+    .feature-grid { grid-template-columns: 1fr !important; }
+  }
+</style>
 
-<div class="container col-lg-12">
-	<div class="row">
+<div class="min-vh-100 pb-5" style="background-color: var(--color-bg); color: var(--color-text);">
 
-		{% if contentText is not empty %}
-			<div class="col-md-12">
-				<div class="well ">
-					{{ contentText }}
-				</div>
-			</div>
-		{% endif %}
-		<div class="col-md-8 col-md-offset-2">
+  <div style="background: var(--color-accent); position: relative; overflow: hidden;">
+    <div style="position:absolute;top:-80px;right:-80px;width:280px;height:280px;
+                border-radius:50%;background:rgba(214,255,246,0.05);pointer-events:none;"></div>
+    <div style="position:absolute;bottom:-60px;left:60px;width:180px;height:180px;
+                border-radius:50%;background:rgba(214,255,246,0.04);pointer-events:none;"></div>
 
+    <div class="container-fluid px-3 px-md-5 py-5">
+      <div class="row align-items-center g-4">
 
-			<div class="well">
+        <div class="col-12 col-md-6">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div style="width:52px;height:52px;border-radius:14px;
+                        background:rgba(214,255,246,0.12);
+                        display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-wallet" style="color:var(--color-accent-contrast);font-size:1.3rem;"></i>
+            </div>
+            <div>
+              <p class="mb-0 fw-semibold"
+                 style="color:var(--color-accent-contrast);opacity:0.5;
+                        font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;">
+                Billing
+              </p>
+              <h1 class="hero-title fw-bold mb-0"
+                  style="color:var(--color-accent-contrast);letter-spacing:-0.5px;font-size:1.75rem;">
+                Add Funds
+              </h1>
+            </div>
+          </div>
+          <p style="color:var(--color-accent-contrast);opacity:0.5;
+                    font-size:0.85rem;max-width:380px;line-height:1.6;">
+            Top up your balance instantly using your preferred payment method. All transactions are secure and encrypted.
+          </p>
+        </div>
 
-				{% if error %}
-					<div class="alert alert-dismissible alert-danger">
-						<button type="button" class="close" data-dismiss="alert">×</button>
-						{{ errorText }}
-					</div>
-				{% endif %}
-				{% if success %}
-					<div class="alert alert-dismissible alert-success">
-						<button type="button" class="close" data-dismiss="alert">×</button>
-						{{ successText }}
-					</div>
-				{% endif %}
+        <div class="col-12 col-md-6">
+          <div class="d-flex flex-wrap gap-2 justify-content-md-end">
+            <span style="display:inline-flex;align-items:center;gap:8px;font-size:0.75rem;
+                         font-weight:600;padding:8px 16px;border-radius:50px;
+                         background:rgba(214,255,246,0.1);color:var(--color-accent-contrast);">
+              <i class="fas fa-shield-alt" style="font-size:0.75rem;opacity:0.8;"></i>
+              SSL Secured
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:8px;font-size:0.75rem;
+                         font-weight:600;padding:8px 16px;border-radius:50px;
+                         background:rgba(214,255,246,0.1);color:var(--color-accent-contrast);">
+              <i class="fas fa-bolt" style="font-size:0.75rem;opacity:0.8;"></i>
+              Instant Top-Up
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:8px;font-size:0.75rem;
+                         font-weight:600;padding:8px 16px;border-radius:50px;
+                         background:rgba(214,255,246,0.1);color:var(--color-accent-contrast);">
+              <i class="fas fa-headset" style="font-size:0.75rem;opacity:0.8;"></i>
+              24/7 Support
+            </span>
+          </div>
+        </div>
 
+      </div>
+    </div>
+  </div>
 
-				<p style="text-align: center;">
-					<span style="font-weight: 700; font-size: 36px;">
-						{{ lang['addfunds.online.title'] }}
-					</span>
-				</p>
+  <div class="container-fluid px-3 px-md-5 mt-4">
+    {# {% if contentText is not empty %}
+      <div class="d-flex align-items-start gap-3 p-4 mb-4"
+           style="background:var(--color-accent-contrast);border-left:4px solid var(--color-accent);
+                  border-radius:14px;border:1px solid var(--color-border);">
+        <i class="fas fa-info-circle mt-1" style="color:var(--color-accent);opacity:0.6;flex-shrink:0;"></i>
+        <div style="font-size:0.88rem;line-height:1.6;color:var(--color-text);">{{ contentText }}</div>
+      </div>
+    {% endif %} #}
 
-				{% if paymentsList %}
+    <div class="row g-3 mb-4 d-none d-sm-flex">
 
-					<form method="post" action="addfunds">
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="feature-card h-100 p-4 rounded-4"
+             style="background:var(--color-text);border:1px solid var(--color-border);">
+          <div style="width:44px;height:44px;border-radius:12px;
+                      background:var(--color-hover-bg);
+                      display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+            <i class="fas fa-lock" style="color:var(--color-accent);font-size:1rem;"></i>
+          </div>
+          <h6 class="fw-bold mb-1" style="color:var(--color-accent-contrast);font-size:0.88rem;">100% Secure</h6>
+          <p class="mb-0 small" style="color:var(--color-accent-contrast);opacity:0.55;line-height:1.5;font-size:0.78rem;">
+            All payments are encrypted with bank-grade SSL security protocols.
+          </p>
+        </div>
+      </div>
 
-						<div class="form-group">
-							<label for="method" class="control-label">{{ lang['addfunds.method'] }}</label>
-							<select class="form-control" id="payment_method_new" name="payment_type">
-								{% for payment in paymentsList %}
-									<option value="{{ payment['id'] }}" {% if data['payment_type'] == payment['id'] %} selected {% endif %}>{{ payment['method_name'] }}</option>
-								{% endfor %}
-							</select>
-						</div>
-						<div id="amount_field" class="form-group"></div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="feature-card h-100 p-4 rounded-4"
+             style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+          <div style="width:44px;height:44px;border-radius:12px;
+                      background:var(--color-hover-bg);
+                      display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+            <i class="fas fa-bolt" style="color:var(--color-accent);font-size:1rem;"></i>
+          </div>
+          <h6 class="fw-bold mb-1" style="color:var(--color-text);font-size:0.88rem;">Instant Processing</h6>
+          <p class="mb-0 small" style="color:var(--color-text);opacity:0.55;line-height:1.5;font-size:0.78rem;">
+            Funds appear in your account immediately after payment confirmation.
+          </p>
+        </div>
+      </div>
 
-						<div id="button_field" class="form-group"></div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="feature-card h-100 p-4 rounded-4"
+             style="background:var(--color-text);border:1px solid var(--color-border);">
+          <div style="width:44px;height:44px;border-radius:12px;
+                      background:var(--color-hover-bg);
+                      display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+            <i class="fas fa-credit-card" style="color:var(--color-accent);font-size:1rem;"></i>
+          </div>
+          <h6 class="fw-bold mb-1" style="color:var(--color-accent-contrast);font-size:0.88rem;">Multiple Methods</h6>
+          <p class="mb-0 small" style="color:var(--color-accent-contrast);opacity:0.55;line-height:1.5;font-size:0.78rem;">
+            Choose from a wide range of trusted payment gateways worldwide.
+          </p>
+        </div>
+      </div>
 
-					</form>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="feature-card h-100 p-4 rounded-4"
+             style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+          <div style="width:44px;height:44px;border-radius:12px;
+                      background:var(--color-hover-bg);
+                      display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+            <i class="fas fa-headset" style="color:var(--color-accent);font-size:1rem;"></i>
+          </div>
+          <h6 class="fw-bold mb-1" style="color:var(--color-text);font-size:0.88rem;">24/7 Support</h6>
+          <p class="mb-0 small" style="color:var(--color-text);opacity:0.55;line-height:1.5;font-size:0.78rem;">
+            Our team is always here to help with any payment issues you face.
+          </p>
+        </div>
+      </div>
 
+    </div>
+<div class="d-block d-sm-none mb-4">
+  <div class="p-4 rounded-4 shadow-sm"
+       style="background-color: var(--color-text); border: 3px solid var(--color-bg);">
+    
+    <div class="d-flex align-items-center gap-3 mb-4 pb-3"
+         style="border-bottom: 1px solid var(--color-hover-bg);">
+      
+      <div class="d-flex align-items-center justify-content-center rounded-3"
+           style="width: 48px; height: 48px; background-color: var(--color-bg);">
+        <i class="fas fa-shield-alt fs-5" style="color: var(--color-text);"></i>
+      </div>
+      
+      <div class="d-flex flex-column">
+        <h6 class="fw-bold mb-0" style="color: var(--color-bg);">
+          Payment Protection
+        </h6>
+        <span style="color: var(--color-bg); opacity: 0.7; font-size: 0.75rem;">
+          Safe & secure checkout
+        </span>
+      </div>
+    </div>
 
-				{% else %}
+    <div class="d-flex flex-column gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="text-center" style="width: 20px;">
+          <i class="fas fa-lock" style="color: var(--color-bg); opacity: 0.9;"></i>
+        </div>
+        <span class="fw-medium" style="color: var(--color-bg); font-size: 0.85rem;">
+          100% secure encrypted payments
+        </span>
+      </div>
+      
+      <div class="d-flex align-items-center gap-3">
+        <div class="text-center" style="width: 20px;">
+          <i class="fas fa-bolt" style="color: var(--color-bg); opacity: 0.9;"></i>
+        </div>
+        <span class="fw-medium" style="color: var(--color-bg); font-size: 0.85rem;">
+          Instant balance top-up confirmation
+        </span>
+      </div>
+      
+      <div class="d-flex align-items-center gap-3">
+        <div class="text-center" style="width: 20px;">
+          <i class="fas fa-credit-card" style="color: var(--color-bg); opacity: 0.9;"></i>
+        </div>
+        <span class="fw-medium" style="color: var(--color-bg); font-size: 0.85rem;">
+          Multiple trusted payment methods
+        </span>
+      </div>
+      
+      <div class="d-flex align-items-center gap-3">
+        <div class="text-center" style="width: 20px;">
+          <i class="fas fa-headset" style="color: var(--color-bg); opacity: 0.9;"></i>
+        </div>
+        <span class="fw-medium" style="color: var(--color-bg); font-size: 0.85rem;">
+          24/7 support for payment issues
+        </span>
+      </div>
+    </div>
 
-					<div class="form-group">
-						<label for="method" class="control-label">{{ lang['addfunds.method'] }}</label>
-						<select disabled class="form-control" id="payment_method_new" name="payment_type">
-							<option>{{lang["addfunds.no.payment.method"]}}</option>
-						</select>
-					</div>
+  </div>
+</div>
+    <div class="row g-4 mb-5 align-items-start">
 
-				{% endif %}
+      <!-- Left: payment form -->
+      <div class="col-12 col-lg-5">
+        <div class="h-100 p-4 p-md-5 rounded-4"
+             style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
 
-			</div>
-		</div>
-	</div>
+          <div class="d-flex align-items-center gap-3 mb-4 pb-3"
+               style="border-bottom:1px solid var(--color-border);">
+            <div style="width:40px;height:40px;border-radius:10px;
+                        background:var(--color-hover-bg);
+                        display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-plus-circle" style="color:var(--color-accent);font-size:0.95rem;"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-0" style="color:var(--color-text);font-size:1rem;">
+                {{ lang['addfunds.online.title'] }}
+              </h5>
+              <p class="mb-0 small" style="color:var(--color-text);opacity:0.45;font-size:0.75rem;">
+                Select a method and enter the amount
+              </p>
+            </div>
+          </div>
+
+          {% if error %}
+            <div class="alert border-0 rounded-3 d-flex align-items-start gap-3 mb-4 p-3"
+                 style="background:rgba(220,53,69,0.08);border-left:4px solid #dc3545 !important;">
+              <i class="fas fa-exclamation-circle mt-1" style="color:#dc3545;font-size:0.85rem;flex-shrink:0;"></i>
+              <div style="font-size:0.85rem;color:#dc3545;flex-grow:1;">{{ errorText }}</div>
+              <button type="button" class="btn-close btn-sm ms-auto" data-bs-dismiss="alert"
+                      style="font-size:0.65rem;opacity:0.6;"></button>
+            </div>
+          {% endif %}
+          {% if success %}
+            <div class="alert border-0 rounded-3 d-flex align-items-start gap-3 mb-4 p-3"
+                 style="background:rgba(25,135,84,0.08);border-left:4px solid #198754 !important;">
+              <i class="fas fa-check-circle mt-1" style="color:#198754;font-size:0.85rem;flex-shrink:0;"></i>
+              <div style="font-size:0.85rem;color:#198754;flex-grow:1;">{{ successText }}</div>
+              <button type="button" class="btn-close btn-sm ms-auto" data-bs-dismiss="alert"
+                      style="font-size:0.65rem;opacity:0.6;"></button>
+            </div>
+          {% endif %}
+
+          {% if paymentsList %}
+            <form method="post" action="addfunds">
+              <div class="mb-4">
+                <label for="payment_method_new" class="fw-semibold d-block mb-2"
+                       style="font-size:0.82rem;color:var(--color-text);letter-spacing:0.3px;">
+                  <i class="fas fa-credit-card me-2" style="opacity:0.5;font-size:0.75rem;"></i>
+                  {{ lang['addfunds.method'] }}
+                </label>
+                <select class="form-select payment-select border rounded-3 py-3 px-3 w-100"
+                        id="payment_method_new" name="payment_type"
+                        style="background-color:var(--color-bg);color:var(--color-text);
+                               border-color:var(--color-border) !important;font-size:0.88rem;
+                               cursor:pointer;">
+                  {% for payment in paymentsList %}
+                    <option value="{{ payment['id'] }}"
+                            {% if data['payment_type'] == payment['id'] %} selected {% endif %}>
+                      {{ payment['method_name'] }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div id="amount_field" class="mb-4"></div>
+              <div id="button_field"></div>
+            </form>
+          {% else %}
+            <div class="mb-3">
+              <label class="fw-semibold d-block mb-2"
+                     style="font-size:0.82rem;color:var(--color-text);letter-spacing:0.3px;">
+                <i class="fas fa-credit-card me-2" style="opacity:0.5;font-size:0.75rem;"></i>
+                {{ lang['addfunds.method'] }}
+              </label>
+              <select disabled class="form-select border rounded-3 py-3 px-3"
+                      id="payment_method_new" name="payment_type"
+                      style="background-color:var(--color-bg);color:var(--color-text);
+                             border-color:var(--color-border) !important;
+                             font-size:0.88rem;opacity:0.6;">
+                <option>{{ lang["addfunds.no.payment.method"] }}</option>
+              </select>
+            </div>
+
+            <div class="text-center py-4">
+              <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle"
+                   style="width:56px;height:56px;background:var(--color-hover-bg);">
+                <i class="fas fa-ban" style="font-size:1.2rem;color:var(--color-accent);opacity:0.4;"></i>
+              </div>
+              <p class="fw-bold mb-1" style="font-size:0.9rem;color:var(--color-text);">
+                No payment methods available
+              </p>
+              <p class="small mb-0" style="color:var(--color-text);opacity:0.45;">
+                Please contact support to enable payments.
+              </p>
+            </div>
+          {% endif %}
+
+          {% if settings["coupon_system"] == 2 %}
+            <div class="mt-4 pt-4" style="border-top:1px solid var(--color-border);">
+              <div class="d-flex align-items-center gap-3 mb-4">
+                <div style="width:36px;height:36px;border-radius:10px;
+                            background:var(--color-hover-bg);
+                            display:flex;align-items:center;justify-content:center;">
+                  <i class="fas fa-tag" style="color:var(--color-accent);font-size:0.9rem;"></i>
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-0" style="color:var(--color-text);font-size:0.95rem;">
+                    {{ lang["addfunds.coupon.label"] }}
+                  </h6>
+                  <p class="mb-0 small" style="color:var(--color-text);opacity:0.45;font-size:0.75rem;">
+                    Have a promo code? Apply it here
+                  </p>
+                </div>
+              </div>
+
+              <form method="post" action="kupon">
+                <div class="mb-3">
+                  <label for="kuponadi" class="fw-semibold d-block mb-2"
+                         style="font-size:0.82rem;color:var(--color-text);letter-spacing:0.3px;">
+                    <i class="fas fa-ticket-alt me-2" style="opacity:0.5;font-size:0.75rem;"></i>
+                    Coupon Code
+                  </label>
+                  <input type="text"
+                         class="form-control border rounded-3 py-3 px-3"
+                         id="kuponadi" name="kuponadi"
+                         placeholder="e.g. SAVE20"
+                         style="background:var(--color-bg);color:var(--color-text);
+                                border-color:var(--color-border) !important;
+                                font-size:0.88rem;letter-spacing:1px;">
+                </div>
+                <input type="hidden" name="crsf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn w-100 fw-bold py-3"
+                        style="background:var(--color-accent);color:var(--color-accent-contrast);
+                               border-radius:12px;font-size:0.85rem;letter-spacing:0.3px;border:none;">
+                  <i class="fas fa-check-circle me-2" style="font-size:0.8rem;"></i>
+                  {{ lang["addfunds.coupon.button.text"] }}
+                </button>
+              </form>
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
+
+      <!-- Right: transaction history -->
+      <div class="col-12 col-lg-7">
+        <div class="h-100 p-4 p-md-5 rounded-4"
+             style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+
+          <div class="d-flex align-items-center gap-3 mb-4 pb-3"
+               style="border-bottom:1px solid var(--color-border);">
+            <div style="width:40px;height:40px;border-radius:10px;
+                        background:var(--color-accent);
+                        display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-history" style="color:var(--color-accent-contrast);font-size:0.9rem;"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-0" style="color:var(--color-text);font-size:1rem;">
+                {{ lang["addfunds.transaction.title"] }}
+              </h5>
+              <p class="mb-0 small" style="color:var(--color-text);opacity:0.45;font-size:0.75rem;">
+                Your complete payment history
+              </p>
+            </div>
+          </div>
+
+          <div class="rounded-4 overflow-hidden"
+               style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+            <div class="table-responsive">
+              <table class="table mb-0 align-middle">
+                <thead>
+                  <tr style="background:var(--color-accent);">
+                    <th class="px-4 py-3 border-0 fw-semibold"
+                        style="color:var(--color-accent-contrast);font-size:0.72rem;
+                               letter-spacing:0.6px;text-transform:uppercase;white-space:nowrap;">
+                      {{ lang["addfunds.transaction.id"] }}
+                    </th>
+                    <th class="px-3 py-3 border-0 fw-semibold"
+                        style="color:var(--color-accent-contrast);font-size:0.72rem;
+                               letter-spacing:0.6px;text-transform:uppercase;white-space:nowrap;">
+                      {{ lang["addfunds.transaction.amount"] }}
+                    </th>
+                    <th class="px-3 py-3 border-0 fw-semibold"
+                        style="color:var(--color-accent-contrast);font-size:0.72rem;
+                               letter-spacing:0.6px;text-transform:uppercase;white-space:nowrap;">
+                      {{ lang["addfunds.transaction.method"] }}
+                    </th>
+                    <th class="px-3 py-3 border-0 fw-semibold"
+                        style="color:var(--color-accent-contrast);font-size:0.72rem;
+                               letter-spacing:0.6px;text-transform:uppercase;white-space:nowrap;">
+                      {{ lang["addfunds.transaction.date"] }}
+                    </th>
+                    <th class="px-3 py-3 border-0 fw-semibold"
+                        style="color:var(--color-accent-contrast);font-size:0.72rem;
+                               letter-spacing:0.6px;text-transform:uppercase;white-space:nowrap;">
+                      {{ lang["addfunds.transaction.transId"] }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  {% for transaction in transactions %}
+                    <tr class="txn-row" style="border-bottom:1px solid var(--color-border);">
+                      <td class="px-4 py-3">
+                        <span class="fw-bold rounded-2 px-2 py-1"
+                              style="background:var(--color-hover-bg);color:var(--color-accent);
+                                     font-size:0.75rem;">
+                          #{{ transaction['payment_id'] }}
+                        </span>
+                      </td>
+                      <td class="px-3 py-3">
+                        <span class="fw-bold d-flex align-items-center gap-1"
+                              style="color:#198754;font-size:0.88rem;">
+                          <i class="fas fa-plus-circle" style="font-size:0.65rem;opacity:0.7;"></i>
+                          {{ convert_currency(transaction['payment_amount']) }}
+                        </span>
+                      </td>
+                      <td class="px-3 py-3">
+                        <span class="d-flex align-items-center gap-2"
+                              style="font-size:0.82rem;color:var(--color-text);">
+                          <i class="fas fa-credit-card"
+                             style="font-size:0.65rem;color:var(--color-accent);opacity:0.5;"></i>
+                          {{ transaction['method_name'] }}
+                        </span>
+                      </td>
+                      <td class="px-3 py-3">
+                        <span class="d-flex align-items-center gap-1"
+                              style="font-size:0.8rem;color:var(--color-text);opacity:0.6;white-space:nowrap;">
+                          <i class="fas fa-calendar-alt" style="font-size:0.65rem;"></i>
+                          {{ show_date(transaction['payment_create_date']) }}
+                        </span>
+                      </td>
+                      <td class="px-3 py-3">
+                        <span class="fw-semibold"
+                              style="font-size:0.78rem;color:var(--color-text);
+                                     opacity:0.7;white-space:nowrap;font-family:monospace;
+                                     letter-spacing:0.5px;">
+                          {{ transaction['payment_extra'] }}
+                        </span>
+                      </td>
+                    </tr>
+                  {% endfor %}
+
+                  {% if transactions is empty %}
+                    <tr>
+                      <td colspan="5" class="text-center py-5">
+                        <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle"
+                             style="width:64px;height:64px;background:var(--color-hover-bg);">
+                          <i class="fas fa-receipt"
+                             style="font-size:1.4rem;color:var(--color-accent);opacity:0.35;"></i>
+                        </div>
+                        <p class="fw-bold mb-1" style="color:var(--color-text);font-size:0.9rem;">
+                          No transactions yet
+                        </p>
+                        <p class="small mb-0" style="color:var(--color-text);opacity:0.45;">
+                          Your payment history will appear here.
+                        </p>
+                      </td>
+                    </tr>
+                  {% endif %}
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {% if pagination["count"] > 1 %}
+          <nav class="mt-4" aria-label="Transactions pagination">
+            <ul class="pagination justify-content-center flex-wrap gap-2 mb-0">
+
+              {% if pagination["current"] != 1 %}
+                <li class="page-item">
+                  <a class="page-link border-0 rounded-circle shadow-sm d-flex align-items-center justify-content-center fw-bold"
+                     href="addfunds/{{ pagination["previous"] }}{% if search %}?search={{ search }}{% endif %}"
+                     aria-label="Previous"
+                     style="width:40px;height:40px;background:var(--color-accent-contrast);color:var(--color-text);">
+                    <i class="fas fa-chevron-left" style="font-size:0.7rem;"></i>
+                  </a>
+                </li>
+              {% endif %}
+
+              {% set r, l = 3, 3 %}
+              {% if pagination['current'] == 1 %}{% set r = 7 %}{% endif %}
+              {% if pagination['current'] == 2 %}{% set r = 5 %}{% endif %}
+              {% if pagination['current'] >= pagination['count'] %}{% set l = 5 %}{% endif %}
+
+              {% for page in 1..pagination["count"] %}
+                {% if page >= (pagination['current']-l) and page <= (pagination['current']+r) %}
+                  <li class="page-item">
+                    <a class="page-link border-0 rounded-circle shadow-sm d-flex align-items-center justify-content-center fw-bold"
+                       href="addfunds/{{ page }}{% if search %}?search={{ search }}{% endif %}"
+                       style="width:40px;height:40px;font-size:0.85rem;
+                              {% if page == pagination['current'] %}
+                                background:var(--color-accent);color:var(--color-accent-contrast);
+                              {% else %}
+                                background:var(--color-accent-contrast);color:var(--color-text);
+                              {% endif %}">
+                      {{ page }}
+                    </a>
+                  </li>
+                {% endif %}
+              {% endfor %}
+
+              {% if pagination['current'] < pagination['count'] %}
+                <li class="page-item">
+                  <a class="page-link border-0 rounded-circle shadow-sm d-flex align-items-center justify-content-center fw-bold"
+                     href="addfunds/{{ pagination['next'] }}{% if search %}?search={{ search }}{% endif %}"
+                     aria-label="Next"
+                     style="width:40px;height:40px;background:var(--color-accent-contrast);color:var(--color-text);">
+                    <i class="fas fa-chevron-right" style="font-size:0.7rem;"></i>
+                  </a>
+                </li>
+              {% endif %}
+
+            </ul>
+          </nav>
+          {% endif %}
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Content Text Bottom -->
+    {% if contentTextBottom is not empty %}
+      <div class="d-flex align-items-start gap-3 p-4 mt-4"
+           style="background:var(--color-accent-contrast);border-left:4px solid var(--color-accent);
+                  border-radius:14px;border:1px solid var(--color-border);">
+        <i class="fas fa-info-circle mt-1" style="color:var(--color-accent);opacity:0.6;flex-shrink:0;"></i>
+        <div style="font-size:0.88rem;line-height:1.6;color:var(--color-text);">{{ contentTextBottom }}</div>
+      </div>
+    {% endif %}
+
+  </div>
 </div>
 
-
-{% if settings["coupon_system"] == 2 %}
-	<div class="container col-lg-12">
-		<div class="row">
-			<div class="col-md-8 col-md-offset-2">
-
-				<div class="well">
-					<form method="post" action="kupon">
-						<div class="form-group">
-							<label for="subject" class="control-label">{{lang["addfunds.coupon.label"]}}</label>
-							<input type="text" class="form-control" id="kuponadi" name="kuponadi">
-						</div>
-						<input type="hidden" name="crsf_token" value="{{ csrf_token() }}">
-						<button type="submit" class="btn btn-primary">{{lang["addfunds.coupon.button.text"]}}</button>
-					</form>
-				</div>
-
-			</div>
-		</div>
-	</div>
-{% endif %}
-
-<div class="container col-lg-12">
-	<div class="row">
-		<div class="col-md-8 col-md-offset-2">
-			<p style="text-align: center;">
-				<span style="font-weight: 600; font-size: 30px;">
-					{{lang["addfunds.transaction.title"]}}
-				</span>
-			</p>
-			<div class="well" style="overflow: auto;">
-
-
-				<table class="table  ">
-					<thead>
-						<tr>
-							<th>{{lang["addfunds.transaction.id"]}}</th>
-							<th>{{lang["addfunds.transaction.amount"]}}</th>
-							<th class="width-40">{{lang["addfunds.transaction.method"]}}</th>
-							<th>{{lang["addfunds.transaction.date"]}}</th>
-							<th class="nowrap">{{lang["addfunds.transaction.transId"]}}</th>
-						</tr>
-					</thead>
-					<tbody>
-
-						{% for transaction in transactions %}
-							<tr>
-								<td>{{ transaction['payment_id'] }}</td>
-
-
-								<td>
-									{{ convert_currency(transaction['payment_amount'])}}
-								</td>
-
-
-								<td class="width-40">{{ transaction['method_name'] }}</td>
-								<td>{{ show_date(transaction['payment_create_date']) }}</td>
-								<td class="nowrap">{{ transaction['payment_extra'] }}</td>
-
-							</tr>
-						{% endfor %}
-
-					</tbody>
-				</table>
-
-
-				{% if pagination["count"] > 1 %}
-					<ul class="pagination">
-
-						{% if pagination["current"] != 1 %}
-							<li>
-								<a href="addfunds/{{ pagination[" previous"] }}{% if search %}?search={{ search }}{% endif %}" aria-label="Previous">
-									<span aria-hidden="true">&laquo;</span>
-								</a>
-							</li>
-						{% endif %}
-
-						{% set r, l = 3, 3 %}
-
-						{% if pagination['current'] == 1 %}
-							{% set r = 7 %}
-						{% endif %}
-
-						{% if pagination['current'] == 2 %}
-							{% set r = 5 %}
-						{% endif %}
-
-						{% if pagination['current'] >= pagination['count'] %}
-							{% set l = 5 %}
-						{% endif %}
-
-						{% for page in 1..pagination["count"] %}
-							{% if page >= (pagination['current']-l) and page <= (pagination['current']+r) %}
-								<li {% if page == pagination['current'] %} class="active" {%endif%}>
-									<a href="addfunds/{{ page }}{% if search %}?search={{ search }}{% endif %}">{{ page }}</a>
-								</li>
-							{% endif %}
-						{% endfor %}
-
-						{% if pagination['current'] < pagination['count'] %}
-							<li>
-								<a href="addfunds/{{ pagination['next'] }}{% if search %}?search={{ search }}{% endif %}" aria-label="Next">
-									<span aria-hidden="true">&raquo;</span>
-								</a>
-							</li>
-						{% endif %}
-
-					</ul>
-				{% endif %}
-
-
-			</div>
-
-		</div>
-		{% if contentTextBottom is not empty %}
-	<div class="col-md-12">
-		<div class="well ">
-			{{ contentTextBottom }}
-		</div>
-	</div>
-{% endif %}
-	</div>
-</div></div></div>{#
-		<div style="display:none;" id="loadderr" class="container">
-			<div class="row">
-				<div id="loading">
-					<img id="loading-image" src="/public/ajax-loading.gif" alt="Loading..."/>
-					<br>
-					<h3 id="processing">
-						Processing Payment....
-					</h3>
-				</div>
-			</div>
-		</div> #}footer.twig' %}
+{% include 'footer.twig' %}
