@@ -15,8 +15,6 @@
 </style>
 
 <div class="min-vh-100 pb-5" style="background-color: var(--color-bg); color: var(--color-text);">
-
-  <!-- ═══════════ HERO HEADER ═══════════ -->
   <div class="py-4 mb-2" style="background: linear-gradient(135deg, var(--color-accent) 0%, #1e3d2b 100%);">
     <div class="container-fluid px-3 px-md-5">
       <div class="row align-items-center g-3">
@@ -65,8 +63,6 @@
   </div>
 
   <div class="container-fluid px-3 px-md-5 mt-4">
-
-    <!-- ═══════════ CONTENT TEXT TOP ═══════════ -->
     {% if contentText is not empty %}
       <div class="alert border-0 rounded-4 mb-4 p-4 shadow-sm"
            style="background:var(--color-hover-bg);color:var(--color-text);border-left:4px solid var(--color-accent) !important;">
@@ -76,8 +72,6 @@
         </div>
       </div>
     {% endif %}
-
-    <!-- ═══════════ TABLE CARD ═══════════ -->
     <div class="card border-0 rounded-4 shadow-sm overflow-hidden">
       <div class="card-body p-0">
         <div class="table-responsive">
@@ -215,7 +209,6 @@
       </div>
     </div>
 
-    <!-- ═══════════ PAGINATION ═══════════ -->
     {% if pagination["count"] > 1 %}
     <nav class="mt-4" aria-label="Refill pagination">
       <ul class="pagination justify-content-center flex-wrap gap-2 mb-0">
@@ -267,8 +260,6 @@
       </ul>
     </nav>
     {% endif %}
-
-    <!-- ═══════════ CONTENT TEXT BOTTOM ═══════════ -->
     {% if contentTextBottom is not empty %}
       <div class="alert border-0 rounded-4 mt-4 p-4 shadow-sm"
            style="background:var(--color-hover-bg);color:var(--color-text);border-left:4px solid var(--color-accent) !important;">

@@ -264,6 +264,7 @@
     z-index: 1040;
     transition: width 0.25s ease, min-width 0.25s ease, transform 0.25s ease;
     overflow: hidden;
+    overflow-x: hidden;
   }
 
   .auth-sidebar::before {
@@ -368,6 +369,8 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
     scrollbar-color: var(--color-border) transparent;
     position: relative;
@@ -564,13 +567,19 @@
     border-top: 1px solid var(--color-border);
     padding: 12px 10px 14px;
     display: none;
-    flex-direction: column;
     gap: 8px;
     flex-shrink: 0;
-    position: relative;
+    position: sticky;
+    bottom: 0;
     z-index: 1;
     background: var(--color-bg);
     backdrop-filter: blur(10px);
+  }
+
+  .sidebar-bottom-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
   .sidebar-bottom::before {
@@ -892,7 +901,47 @@
       min-width: var(--sidebar-w) !important;
       top: 0;
       height: 100vh;
+      overflow-y: auto;
+      overflow-x: hidden;
       /* Override collapsed styles on mobile */
+    }
+    .sidebar-nav {
+      flex: 0 0 auto;
+      overflow: visible;
+      max-height: none;
+    }
+    .sidebar-bottom {
+      display: flex;
+      position: relative;
+      margin-top: 8px;
+    }
+    .sidebar-bottom-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .sidebar-bottom-grid > * {
+      min-width: 0;
+    }
+    .sidebar-bottom-grid .sidebar-balance-row,
+    .sidebar-bottom-grid .sidebar-nav-item,
+    .sidebar-bottom-grid .sidebar-dropdown {
+      width: 100%;
+    }
+    .sidebar-bottom-grid .sidebar-nav-item,
+    .sidebar-bottom-grid .sidebar-balance-row {
+      padding: 10px 12px;
+      min-height: 56px;
+    }
+    .sidebar-bottom-grid .sidebar-dropdown .sidebar-nav-item {
+      min-height: 56px;
+    }
+    .sidebar-bottom-grid .sidebar-balance-pill {
+      font-size: 11px;
+      padding: 4px 9px;
+    }
+    .sidebar-bottom-grid .sidebar-nav-label {
+      max-width: none;
     }
     .auth-sidebar.mobile-open { transform: translateX(0); }
     /* Reset label/badge visibility on mobile open */
@@ -903,7 +952,6 @@
     .auth-sidebar.mobile-open .sidebar-collapse-btn { display: none; }
 
     .mobile-topbar { display: flex; }
-    .sidebar-bottom { display: flex; }
     .desktop-topbar { display: none !important; }
     .app-content { margin-left: 0 !important; }
     body.auth-sidebar-open,
@@ -1041,46 +1089,49 @@
 
   <!-- Bottom: balance, currency, account, logout -->
   <div class="sidebar-bottom">
+    <div class="sidebar-bottom-grid">
 
-    <!-- Balance -->
-    <div class="sidebar-balance-row" data-balance-label="{{ convert_currency(user['balance']) }}">
-      <span class="sidebar-nav-icon"><i class="fas fa-wallet"></i></span>
-      <span class="sidebar-balance-pill">{{ convert_currency(user['balance']) }}</span>
-    </div>
-
-    <!-- Currency converter -->
-    {% if settings["currency_converter"] == 1 %}
-      <div class="sidebar-dropdown">
-        <a class="sidebar-nav-item" id="currencyToggle" href="#" data-tooltip="{{ user['user_pref_curr'] }}">
-          <span class="sidebar-nav-icon"><i class="fas fa-coins"></i></span>
-          <span class="sidebar-nav-label">{{ user['user_pref_curr'] }}</span>
-          <i class="fas fa-chevron-up sidebar-nav-label" style="font-size:10px; margin-left:auto;"></i>
-        </a>
-        <div class="sidebar-dropdown-menu" id="currencyMenu">
-          {% for currency in currencies %}
-            <a href="{{ site['url'] }}?user_pref_curr={{ currency['currency_name'] }}">
-              {{ currency['currency_name'] }}
-            </a>
-          {% endfor %}
-        </div>
+      <!-- Balance -->
+      <div class="sidebar-balance-row" data-balance-label="{{ convert_currency(user['balance']) }}">
+        <span class="sidebar-nav-icon"><i class="fas fa-wallet"></i></span>
+        <span class="sidebar-balance-pill">{{ convert_currency(user['balance']) }}</span>
       </div>
-    {% endif %}
 
-    <!-- Account -->
-    {% if pagesData[13]["page_status_auth"] == 2 %}
-      <a href="account"
-         class="sidebar-nav-item {% if active_menu == 'account' %}active{% endif %}"
-         data-tooltip="{{ lang['account.title'] }}">
-        <span class="sidebar-nav-icon"><i class="{{ pagesData[13]['page_icon'] }}"></i></span>
-        <span class="sidebar-nav-label">{{ lang['account.title'] }}</span>
+      <!-- Currency converter -->
+      {% if settings["currency_converter"] == 1 %}
+        <div class="sidebar-dropdown">
+          <a class="sidebar-nav-item" id="currencyToggle" href="#" data-tooltip="{{ user['user_pref_curr'] }}">
+            <span class="sidebar-nav-icon"><i class="fas fa-coins"></i></span>
+            <span class="sidebar-nav-label">{{ user['user_pref_curr'] }}</span>
+            <i class="fas fa-chevron-up sidebar-nav-label" style="font-size:10px; margin-left:auto;"></i>
+          </a>
+          <div class="sidebar-dropdown-menu" id="currencyMenu">
+            {% for currency in currencies %}
+              <a href="{{ site['url'] }}?user_pref_curr={{ currency['currency_name'] }}">
+                {{ currency['currency_name'] }}
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Account -->
+      {% if pagesData[13]["page_status_auth"] == 2 %}
+        <a href="account"
+           class="sidebar-nav-item {% if active_menu == 'account' %}active{% endif %}"
+           data-tooltip="{{ lang['account.title'] }}">
+          <span class="sidebar-nav-icon"><i class="{{ pagesData[13]['page_icon'] }}"></i></span>
+          <span class="sidebar-nav-label">{{ lang['account.title'] }}</span>
+        </a>
+      {% endif %}
+
+      <!-- Logout -->
+      <a href="logout" class="sidebar-nav-item" data-tooltip="{{ lang['logout.title'] }}">
+        <span class="sidebar-nav-icon"><i class="fas fa-sign-out-alt"></i></span>
+        <span class="sidebar-nav-label">{{ lang['logout.title'] }}</span>
       </a>
-    {% endif %}
 
-    <!-- Logout -->
-    <a href="logout" class="sidebar-nav-item" data-tooltip="{{ lang['logout.title'] }}">
-      <span class="sidebar-nav-icon"><i class="fas fa-sign-out-alt"></i></span>
-      <span class="sidebar-nav-label">{{ lang['logout.title'] }}</span>
-    </a>
+    </div>
 
   </div>
 </aside>
