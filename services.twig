@@ -1,16 +1,6 @@
 {% include 'header.twig' %}
 
 <style>
-  :root {
-    --color-bg: #fffced;
-    --color-text: #14281D;
-    --color-accent: #14281D;
-    --color-accent-contrast: #fffced;
-    --color-border: rgba(20, 40, 29, 0.1);
-    --color-hover-bg: #f7f6d8;
-  }
-
-  /* ── Reset & Base ─────────────────────────────────────── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
@@ -25,31 +15,71 @@
   .sv-page {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
+    padding: 1.25rem 1.5rem 4rem;
   }
 
-  /* ── Page header ──────────────────────────────────────── */
-  .sv-header {
-    margin-bottom: 2rem;
+  .sv-hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-text) 100%);
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .sv-header h1 {
-    font-size: 26px;
-    font-weight: 600;
-    color: var(--color-text);
-    letter-spacing: -0.4px;
-    line-height: 1.2;
+  .sv-hero::after {
+    content: '';
+    position: absolute;
+    right: -90px;
+    top: -110px;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: var(--color-border);
+    pointer-events: none;
   }
 
-  .sv-header p {
+  .sv-hero-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--color-border);
+    color: var(--color-accent-contrast);
+  }
+
+  .sv-hero-title {
+    font-size: 30px;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    font-weight: 700;
+    color: var(--color-accent-contrast);
+  }
+
+  .sv-hero-subtitle {
     margin-top: 4px;
-    font-size: 13px;
-    color: rgba(20,40,29,0.45);
+    font-size: 14px;
+    color: var(--color-hover-bg);
+  }
+
+  .sv-hero-note {
+    justify-content: flex-start;
+    border-radius: 999px;
+    padding: 10px 14px;
+    background: var(--color-border);
+    color: var(--color-accent-contrast);
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+
+  .sv-hero-note-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-hover-bg);
+    flex-shrink: 0;
   }
 
   /* ── Content well (top / bottom) ─────────────────────── */
   .sv-well {
-    background: #fff;
+    background: var(--color-accent-contrast);
     border: 1px solid var(--color-border);
     border-radius: 12px;
     padding: 1rem 1.25rem;
@@ -95,6 +125,32 @@
 
   .sv-btn-filter svg { flex-shrink: 0; }
 
+  .sv-btn-bookmarks {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--color-accent-contrast);
+    color: var(--color-accent);
+    border: 1px solid var(--color-border);
+    border-radius: 9px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+
+  .sv-btn-bookmarks:hover {
+    background: var(--color-hover-bg);
+  }
+
+  .sv-btn-bookmarks.active {
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+    border-color: var(--color-accent);
+  }
+
   /* Dropdown panel */
   .sv-dropdown-panel {
     display: none;
@@ -102,13 +158,13 @@
     top: calc(100% + 7px);
     left: 0;
     z-index: 200;
-    background: #fff;
+    background: var(--color-accent-contrast);
     border: 1px solid var(--color-border);
     border-radius: 12px;
     min-width: 230px;
     max-height: 380px;
     overflow-y: auto;
-    box-shadow: 0 8px 28px rgba(20,40,29,0.09);
+    box-shadow: 0 8px 28px var(--color-border);
     padding: 5px 0;
   }
 
@@ -157,7 +213,7 @@
     left: 11px;
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(20,40,29,0.35);
+    color: var(--color-border);
     pointer-events: none;
   }
 
@@ -166,50 +222,20 @@
     padding: 9px 14px 9px 34px;
     border: 1px solid var(--color-border);
     border-radius: 9px;
-    background: #fff;
+    background: var(--color-accent-contrast);
     color: var(--color-text);
     font-size: 13px;
     outline: none;
     transition: border-color 0.15s;
   }
 
-  .sv-search-wrap input::placeholder { color: rgba(20,40,29,0.35); }
+  .sv-search-wrap input::placeholder { color: var(--color-border); }
 
-  .sv-search-wrap input:focus { border-color: rgba(20,40,29,0.4); }
-
-  /* ── Chips row ────────────────────────────────────────── */
-  .sv-chips {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-  }
-
-  .sv-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: rgba(20,40,29,0.07);
-    color: var(--color-text);
-    border: none;
-    border-radius: 20px;
-    padding: 5px 13px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.12s, color 0.12s;
-  }
-
-  .sv-chip:hover { background: rgba(20,40,29,0.13); }
-
-  .sv-chip.active {
-    background: var(--color-accent);
-    color: var(--color-accent-contrast);
-  }
+  .sv-search-wrap input:focus { border-color: var(--color-accent); }
 
   /* ── Table card ───────────────────────────────────────── */
   .sv-table-card {
-    background: #fff;
+    background: var(--color-accent-contrast);
     border: 1px solid var(--color-border);
     border-radius: 14px;
     overflow: hidden;
@@ -236,7 +262,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.55px;
-    color: rgba(20,40,29,0.4);
+    color: var(--color-text);
     white-space: nowrap;
   }
 
@@ -248,7 +274,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: rgba(20,40,29,0.45);
+    color: var(--color-text);
     border-top: 1px solid var(--color-border);
     border-bottom: 1px solid var(--color-border);
   }
@@ -275,7 +301,7 @@
   /* Favourite star */
   .sv-fav {
     cursor: pointer;
-    color: rgba(20,40,29,0.25);
+    color: var(--color-border);
     font-size: 15px;
     transition: color 0.15s, transform 0.15s;
     line-height: 1;
@@ -284,7 +310,7 @@
 
   .sv-fav:hover { transform: scale(1.2); }
 
-  .sv-fav.active { color: #d4a017; }
+  .sv-fav.active { color: var(--color-accent); }
 
   /* ID cell */
   .sv-id-pill {
@@ -297,26 +323,26 @@
     padding: 3px 9px;
     font-family: monospace;
     font-size: 12px;
-    color: rgba(20,40,29,0.55);
+    color: var(--color-text);
     cursor: pointer;
     transition: background 0.12s, color 0.12s;
     white-space: nowrap;
   }
 
   .sv-id-pill:hover {
-    background: rgba(20,40,29,0.1);
+    background: var(--color-border);
     color: var(--color-text);
   }
 
-  .sv-id-pill svg { opacity: 0.55; flex-shrink: 0; }
+  .sv-id-pill svg { opacity: 1; flex-shrink: 0; }
 
   /* Service name */
-  .sv-name { font-weight: 500; }
+  .sv-name { color: var(--color-text); font-weight: 500; }
 
   /* Price badge */
   .sv-price {
     display: inline-block;
-    background: rgba(20,40,29,0.07);
+    background: var(--color-hover-bg);
     border-radius: 7px;
     padding: 3px 10px;
     font-size: 12px;
@@ -326,7 +352,7 @@
   }
 
   /* Min / max / avg */
-  .sv-muted { color: rgba(20,40,29,0.5); font-size: 12px; }
+  .sv-muted { color: var(--color-border); font-size: 12px; }
 
   /* Details button */
   .sv-btn-details {
@@ -348,18 +374,18 @@
   .sv-empty {
     text-align: center;
     padding: 3.5rem 1rem;
-    color: rgba(20,40,29,0.3);
+    color: var(--color-border);
     font-size: 14px;
   }
 
-  .sv-empty svg { margin-bottom: 12px; opacity: 0.2; }
+  .sv-empty svg { margin-bottom: 12px; opacity: 1; }
 
   /* ── Modal ────────────────────────────────────────────── */
   .sv-modal-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(20,40,29,0.5);
+    background: var(--color-border);
     z-index: 999;
     align-items: center;
     justify-content: center;
@@ -369,7 +395,7 @@
   .sv-modal-overlay.open { display: flex; }
 
   .sv-modal {
-    background: #fff;
+    background: var(--color-accent-contrast);
     border-radius: 16px;
     border: 1px solid var(--color-border);
     width: 100%;
@@ -403,7 +429,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: rgba(20,40,29,0.35);
+    color: var(--color-border);
     font-size: 22px;
     line-height: 1;
     flex-shrink: 0;
@@ -437,13 +463,13 @@
     padding: 4px 10px;
     font-size: 12px;
     font-weight: 500;
-    color: rgba(20,40,29,0.65);
+    color: var(--color-text);
   }
 
   .sv-modal-desc {
     font-size: 14px;
     line-height: 1.7;
-    color: rgba(20,40,29,0.7);
+    color: var(--color-text);
   }
 
   /* ── Toast ────────────────────────────────────────────── */
@@ -482,13 +508,36 @@
     .sv-table thead th:nth-child(5),
     .sv-table tbody td:nth-child(5) { display: none; }
     .sv-search-wrap { max-width: 100%; }
+    .sv-page { padding-top: 1rem; }
+    .sv-hero-title { font-size: 24px; }
   }
 </style>
-<div class="sv-page">
-  <div class="sv-header">
-    <h1>Services</h1>
-    <p>Browse and place orders from our available services</p>
+<div class="sv-hero py-4 mb-2">
+  <div class="container-fluid px-3 px-md-5 position-relative">
+    <div class="row align-items-center g-3">
+      <div class="col-12 col-md-7">
+        <div class="d-flex align-items-center gap-3">
+          <div class="sv-hero-icon d-flex align-items-center justify-content-center shadow-sm">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M4 7h16M4 12h10M4 17h13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="sv-hero-title mb-0">Services</h1>
+            <p class="sv-hero-subtitle mb-0">Browse and place orders from our available services</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-5">
+        <div class="sv-hero-note d-flex align-items-center gap-2">
+          <span class="sv-hero-note-dot"></span>
+          Filter by category, search by name, or switch to bookmarks instantly.
+        </div>
+      </div>
+    </div>
   </div>
+</div>
+<div class="sv-page">
   {# {% if contentText is not empty %}
     <div class="sv-well">{{ contentText }}</div>
   {% endif %} #}
@@ -524,6 +573,14 @@
         {% endfor %}
       </div>
     </div>
+
+    {% if site['modules']['favorite_services'] %}
+      <button class="sv-btn-bookmarks" id="svBookmarksBtn" onclick="svToggleBookmarks()" aria-pressed="false" type="button">
+        <span>★</span>
+        <span>Bookmarks</span>
+      </button>
+    {% endif %}
+
     <!-- Search input -->
     <div class="sv-search-wrap">
       <svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -533,16 +590,6 @@
       <input type="text" id="svSearchInput" placeholder="Search services…" oninput="svHandleSearch(this.value)" autocomplete="off">
     </div>
 
-  </div>
-  <div class="sv-chips" id="svChips">
-    <button class="sv-chip active" data-chip="All" onclick="svFilterCat('All', 'All categories', null)">All</button>
-    {% for category in serviceCategory %}
-      <button class="sv-chip" data-chip="{{ category['category_id'] }}"
-              onclick="svFilterCat('{{ category['category_id'] }}', '{{ category['category_name'] }}', null)">
-        {% if category['category_icon']['iconType'] == 'emoji' %}{{ category['category_icon']['icon'] }} {% endif %}
-        {{ category['category_name'] }}
-      </button>
-    {% endfor %}
   </div>
   <div class="sv-table-card">
     <div class="sv-table-scroll">
@@ -606,7 +653,7 @@
                     {{ service['service_id'] }}
                     <svg width="11" height="11" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <rect x="5" y="1" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.4"/>
-                      <rect x="1" y="5" width="9" height="9" rx="2" fill="#fff" stroke="currentColor" stroke-width="1.4"/>
+                      <rect x="1" y="5" width="9" height="9" rx="2" fill="currentColor" stroke="currentColor" stroke-width="1.4"/>
                     </svg>
                   </span>
                 </td>
@@ -676,6 +723,65 @@
   'use strict';
   var activeCat  = 'All';
   var searchQ    = '';
+  var bookmarkOnly = false;
+  var favStorageKey = 'svBookmarkedServices';
+  var favs = {};
+
+  function svLoadFavs() {
+    try {
+      var raw = localStorage.getItem(favStorageKey);
+      if (!raw) return;
+
+      var parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        parsed.forEach(function (id) { favs[String(id)] = true; });
+      }
+    } catch (e) {}
+  }
+
+  function svSaveFavs() {
+    try {
+      localStorage.setItem(favStorageKey, JSON.stringify(Object.keys(favs)));
+    } catch (e) {}
+  }
+
+  function svApplyFavVisual(el, isFav) {
+    el.classList.toggle('active', !!isFav);
+    el.textContent = isFav ? '★' : '☆';
+    el.title = isFav ? 'Remove from favourites' : 'Add to favourites';
+  }
+
+  function svInitFavs() {
+    var stars = document.querySelectorAll('.sv-fav[data-service-id]');
+    if (!stars.length) return;
+
+    svLoadFavs();
+    var hasStored = Object.keys(favs).length > 0;
+
+    stars.forEach(function (star) {
+      var id = String(star.getAttribute('data-service-id') || '');
+      if (!id) return;
+
+      if (hasStored) {
+        svApplyFavVisual(star, !!favs[id]);
+      } else if (star.classList.contains('active')) {
+        favs[id] = true;
+      }
+    });
+
+    if (!hasStored) svSaveFavs();
+  }
+
+  function svToggleBookmarks() {
+    bookmarkOnly = !bookmarkOnly;
+    var btn = document.getElementById('svBookmarksBtn');
+    if (btn) {
+      btn.classList.toggle('active', bookmarkOnly);
+      btn.setAttribute('aria-pressed', bookmarkOnly ? 'true' : 'false');
+    }
+    svApplyFilters();
+  }
+
   function svToggleDrop() {
     var panel   = document.getElementById('svDropPanel');
     var chevron = document.getElementById('svChevron');
@@ -709,11 +815,7 @@
     dropLinks.forEach(function (a) {
       a.classList.toggle('active', a.getAttribute('data-cat-id') === catId);
     });
-    var chips = document.querySelectorAll('.sv-chip');
-    chips.forEach(function (c) {
-      c.classList.toggle('active', c.getAttribute('data-chip') === catId);
-    });
-	/* Close dropdown */
+    /* Close dropdown */
     document.getElementById('svDropPanel').classList.remove('open');
     document.getElementById('svChevron').style.transform = 'rotate(0deg)';
     var btn = document.getElementById('svDropBtn');
@@ -745,7 +847,9 @@
       var catMatch    = (activeCat === 'All') || (rowCat === activeCat);
       var searchMatch = !searchQ || rowName.indexOf(searchQ) !== -1 || rowId.indexOf(searchQ) !== -1;
 
-      if (catMatch && searchMatch) {
+      var bookmarkMatch = !bookmarkOnly || !!favs[rowId];
+
+      if (catMatch && searchMatch && bookmarkMatch) {
         row.style.display = '';
         visCount++;
         visibleCats[rowCat] = true;
@@ -821,11 +925,22 @@
   }
 
   function svToggleFav(el) {
+    var id = String(el.getAttribute('data-service-id') || '');
     var isActive = el.classList.contains('active');
-    el.classList.toggle('active', !isActive);
-    el.textContent = isActive ? '☆' : '★';
-    el.title = isActive ? 'Add to favourites' : 'Remove from favourites';
-    /* Wire your AJAX favourite endpoint here if needed */
+    var nextState = !isActive;
+
+    svApplyFavVisual(el, nextState);
+
+    if (id) {
+      if (nextState) {
+        favs[id] = true;
+      } else {
+        delete favs[id];
+      }
+      svSaveFavs();
+    }
+
+    svApplyFilters();
   }
 
   /* ── Toast ──────────────────────────────────────────── */
@@ -847,6 +962,9 @@
   window.svOverlayClick = svOverlayClick;
   window.svCopyId       = svCopyId;
   window.svToggleFav    = svToggleFav;
+  window.svToggleBookmarks = svToggleBookmarks;
+
+  svInitFavs();
 
 })();
 </script>
