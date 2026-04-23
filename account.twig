@@ -124,7 +124,7 @@
                           justify-content-md-start gap-2"
                   style="color:var(--color-accent-contrast);opacity:0.5;font-size:1.0rem;">
               <i class="fas fa-phone" style="font-size:0.7rem;"></i>
-              {{ user['telephone'] ?: 'No Phone Linked' }}
+              {{ user['telephone'] is not empty ? user['telephone'] : 'No Phone Linked' }}
             </span>
           </div>
         </div>
@@ -183,7 +183,7 @@
           <!-- Password Card -->
           <div class="module-card p-4 p-md-5 rounded-4 position-relative overflow-hidden"
                style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
-            <div style="position:absolute;left:-40px;top:-40px;width:160px;height:160px;
+            <div style="position:absolute;right:-40px;top:-40px;width:160px;height:160px;
                         border-radius:50%;background:var(--color-text);opacity:0.8;
                         pointer-events:none;"></div>
 
@@ -550,7 +550,7 @@
         </div>
         <div style="font-size:0.82rem;color:var(--color-text);opacity:0.55;
                     line-height:1.6;font-style:italic;">
-          {{ contentTextBottom ?: "Monitor your account activity. Unauthorized access should be reported to support immediately." }}
+          {{ contentTextBottom is not empty ? contentTextBottom : "Monitor your account activity. Unauthorized access should be reported to support immediately." }}
         </div>
       </div>
     </div>

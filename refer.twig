@@ -30,8 +30,14 @@
   }
   @media (max-width: 576px) {
     .hero-title { font-size: 1.3rem; }
-    .donut-wrap { width: 110px; height: 110px; }
-    .donut-wrap canvas { width: 110px !important; height: 110px !important; }
+    .ref-summary-card-body { flex-direction: column; align-items: center !important; text-align: center; gap: 0.85rem !important; }
+    .ref-summary-card-body .flex-grow-1 { width: 100%; }
+    .ref-summary-card-body .mb-3 { margin-bottom: 0.75rem !important; }
+    .ref-summary-card-body .donut-center .total-label { font-size: 1.15rem !important; }
+    .ref-summary-card-body .donut-center .total-amount { font-size: 1.45rem !important; }
+    .donut-wrap { width: 92px; height: 92px; }
+    .donut-wrap canvas { width: 92px !important; height: 92px !important; }
+    .donut-center { line-height: 1.05; }
   }
 </style>
 
@@ -162,10 +168,10 @@
     <div class="row g-4 mb-4">
 
       <!-- Donut 1: Commission Rate -->
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="stat-card h-100 p-4 rounded-4"
+      <div class="col-6 col-md-6 col-lg-4">
+        <div class="stat-card h-100 p-3 p-md-4 rounded-4"
              style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
-          <div class="d-flex align-items-center gap-4">
+          <div class="ref-summary-card-body d-flex align-items-center gap-4">
             <div class="donut-wrap">
               <canvas id="donutConversion"></canvas>
               <div class="donut-center">
@@ -209,15 +215,15 @@
         </div>
       </div>
 
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="stat-card h-100 p-4 rounded-4"
+      <div class="col-6 col-md-6 col-lg-4">
+        <div class="stat-card h-100 p-3 p-md-4 rounded-4"
              style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
-          <div class="d-flex align-items-center gap-4">
+          <div class="ref-summary-card-body d-flex align-items-center gap-4">
             <div class="donut-wrap">
               <canvas id="donutEarnings"></canvas>
               <div class="donut-center">
-                <div class="fw-bold" style="font-size:0.7rem;color:var(--color-text);">Total</div>
-                <div class="fw-bold" style="font-size:0.78rem;color:var(--color-text);">
+                <div class="fw-bold total-label" style="font-size:1rem;color:var(--color-text);">Total</div>
+                <div class="fw-bold total-amount" style="font-size:1.2rem;color:var(--color-text);">
                   {{ convert_currency(ref_content["referral_total_commision"]) }}
                 </div>
               </div>
