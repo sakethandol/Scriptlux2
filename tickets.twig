@@ -14,6 +14,27 @@
   }
   .feature-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
   .feature-card:hover { transform: translateY(-4px); box-shadow: 0 10px 28px var(--color-border) !important; }
+  .decorative-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .decorative-card::after {
+    content: "";
+    position: absolute;
+    right: -26px;
+    top: -26px;
+    width: 108px;
+    height: 108px;
+    border-radius: 50%;
+    background: var(--decor-circle-color, var(--color-text));
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .decorative-card > * {
+    position: relative;
+    z-index: 1;
+  }
   .feature-a {
     background: var(--color-accent-contrast);
     border-color: var(--color-border) !important;
@@ -59,6 +80,8 @@
     .hero-title { font-size: 1.3rem; }
     .feature-grid > div:nth-child(1) .feature-card,
     .feature-grid > div:nth-child(4) .feature-card { background: var(--color-accent-contrast) !important; }
+    .feature-grid > div:nth-child(1) .feature-card,
+    .feature-grid > div:nth-child(4) .feature-card { --decor-circle-color: var(--color-text) !important; }
     .feature-grid > div:nth-child(1) .feature-icon,
     .feature-grid > div:nth-child(4) .feature-icon { background: var(--color-hover-bg) !important; color: var(--color-accent) !important; }
     .feature-grid > div:nth-child(1) .feature-title,
@@ -67,6 +90,8 @@
     .feature-grid > div:nth-child(4) .feature-desc { color: var(--color-text) !important; }
     .feature-grid > div:nth-child(2) .feature-card,
     .feature-grid > div:nth-child(3) .feature-card { background: var(--color-text) !important; }
+    .feature-grid > div:nth-child(2) .feature-card,
+    .feature-grid > div:nth-child(3) .feature-card { --decor-circle-color: var(--color-bg) !important; }
     .feature-grid > div:nth-child(2) .feature-icon,
     .feature-grid > div:nth-child(3) .feature-icon { background: rgba(214,255,246,0.08) !important; color: var(--color-accent-contrast) !important; }
     .feature-grid > div:nth-child(2) .feature-title,
@@ -178,8 +203,8 @@
       ] %}
       {% for f in features %}
         <div class="col-6 col-lg-3">
-          <div class="feature-card {% if loop.index is odd %}feature-a{% else %}feature-b{% endif %} h-100 p-3 p-md-4 rounded-4"
-               style="border:1px solid;">
+          <div class="feature-card decorative-card {% if loop.index is odd %}feature-a{% else %}feature-b{% endif %} h-100 p-3 p-md-4 rounded-4"
+               style="--decor-circle-color:{% if loop.index is odd %}var(--color-text){% else %}var(--color-bg){% endif %};border:1px solid;">
             <div class="feature-icon" style="width:38px;height:38px;border-radius:11px;
                         display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
               <i class="fas {{ f.icon }}" style="font-size:0.88rem;"></i>
@@ -233,8 +258,8 @@
 
         <!-- Form card -->
         <div class="col-12 col-lg-8">
-          <div class="p-4 p-md-5 rounded-4"
-               style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+          <div class="decorative-card p-4 p-md-5 rounded-4"
+            style="--decor-circle-color:var(--color-text);background:var(--color-accent-contrast);border:1px solid var(--color-border);">
 
             <!-- Form header -->
             <div class="d-flex align-items-center gap-3 mb-4 pb-3"
@@ -385,8 +410,8 @@
 
         <!-- Side tips card -->
         <div class="col-12 col-lg-4">
-          <div class="p-4 rounded-4 h-100"
-               style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+          <div class="decorative-card p-4 rounded-4 h-100"
+            style="--decor-circle-color:var(--color-text);background:var(--color-accent-contrast);border:1px solid var(--color-border);">
             <div class="d-flex align-items-center gap-2 mb-4 pb-3"
                  style="border-bottom:1px solid var(--color-border);">
               <div style="width:38px;height:38px;border-radius:10px;background:var(--color-hover-bg);
@@ -444,8 +469,8 @@
       </div>
     </div>
 
-    <div class="rounded-4 overflow-hidden mb-4"
-         style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+        <div class="decorative-card rounded-4 overflow-hidden mb-4"
+          style="--decor-circle-color:var(--color-text);background:var(--color-accent-contrast);border:1px solid var(--color-border);">
       <div class="table-responsive">
         <table class="table mb-0 align-middle">
 
