@@ -366,26 +366,31 @@
           <div class="col-12 col-sm-6 col-lg-3">
             <div class="stat-card h-100 p-4 rounded-4 position-relative overflow-hidden"
                  style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
-              <div style="position:absolute;top:-10px;right:10px;font-size:4rem;font-weight:900;
-                          color:var(--color-text);opacity:0.04;line-height:1;pointer-events:none;
-                          user-select:none;">
-                {{ s.num }}
+              <div style="position:absolute;right:-40px;top:-40px;width:160px;height:160px;
+                          border-radius:50%;background:var(--color-text);opacity:0.8;
+                          pointer-events:none;"></div>
+              <div class="position-relative">
+                <div style="position:absolute;top:-10px;right:10px;font-size:4rem;font-weight:900;
+                            color:var(--color-accent-contrast);opacity:0.4;line-height:1;pointer-events:none;
+                            user-select:none;">
+                  {{ s.num }}
+                </div>
+                <div style="width:42px;height:42px;border-radius:11px;background:var(--color-hover-bg);
+                            display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                  <i class="fas {{ s.icon }}" style="color:var(--color-accent);font-size:0.95rem;"></i>
+                </div>
+                <span style="font-size:0.62rem;font-weight:700;letter-spacing:1px;
+                             color:var(--color-accent);opacity:0.5;text-transform:uppercase;">
+                  Step {{ s.num }}
+                </span>
+                <h6 class="fw-bold mt-1 mb-2" style="color:var(--color-text);font-size:0.9rem;">
+                  {{ s.title }}
+                </h6>
+                <p class="mb-0 small" style="color:var(--color-text);opacity:0.5;
+                           line-height:1.55;font-size:0.78rem;">
+                  {{ s.desc }}
+                </p>
               </div>
-              <div style="width:42px;height:42px;border-radius:11px;background:var(--color-hover-bg);
-                          display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
-                <i class="fas {{ s.icon }}" style="color:var(--color-accent);font-size:0.95rem;"></i>
-              </div>
-              <span style="font-size:0.62rem;font-weight:700;letter-spacing:1px;
-                           color:var(--color-accent);opacity:0.5;text-transform:uppercase;">
-                Step {{ s.num }}
-              </span>
-              <h6 class="fw-bold mt-1 mb-2" style="color:var(--color-text);font-size:0.9rem;">
-                {{ s.title }}
-              </h6>
-              <p class="mb-0 small" style="color:var(--color-text);opacity:0.5;
-                         line-height:1.55;font-size:0.78rem;">
-                {{ s.desc }}
-              </p>
             </div>
           </div>
         {% endfor %}
