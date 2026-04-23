@@ -1,5 +1,7 @@
 {% include 'header.twig' %}
 
+{% set referral_commission_rate = 5 %}
+
 <style>
   html { scroll-behavior: smooth; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -71,7 +73,7 @@
                     font-size:0.85rem;max-width:440px;line-height:1.6;">
             Share your unique link, earn
             <strong style="color:var(--color-accent-contrast);opacity:1;">
-              {{ settings["referral_commision"] }}%
+              {{ referral_commission_rate }}%
             </strong>
             commission on every referral. Cash out when you hit the minimum payout threshold.
           </p>
@@ -80,7 +82,7 @@
                          font-weight:600;padding:6px 14px;border-radius:50px;
                          background:rgba(214,255,246,0.1);color:var(--color-accent-contrast);">
               <i class="fas fa-percentage" style="font-size:0.7rem;opacity:0.75;"></i>
-              {{ settings["referral_commision"] }}% Commission
+              {{ referral_commission_rate }}% Commission
             </span>
             <span style="display:inline-flex;align-items:center;gap:7px;font-size:0.72rem;
                          font-weight:600;padding:6px 14px;border-radius:50px;
@@ -159,7 +161,7 @@
 
     <div class="row g-4 mb-4">
 
-      <!-- Donut 1: Conversion Rate -->
+      <!-- Donut 1: Commission Rate -->
       <div class="col-12 col-md-6 col-lg-4">
         <div class="stat-card h-100 p-4 rounded-4"
              style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
@@ -168,7 +170,7 @@
               <canvas id="donutConversion"></canvas>
               <div class="donut-center">
                 <div class="fw-bold" style="font-size:1.05rem;color:var(--color-text);">
-                  {{ ref_content['ref_conversion_rate'] }}%
+                  {{ referral_commission_rate }}%
                 </div>
                 <div style="font-size:0.58rem;color:var(--color-text);opacity:0.45;
                             text-transform:uppercase;letter-spacing:0.5px;">
@@ -180,26 +182,26 @@
               <p class="mb-1 fw-semibold"
                  style="font-size:0.7rem;color:var(--color-text);opacity:0.5;
                         text-transform:uppercase;letter-spacing:0.5px;">
-                Conversion Rate
+                Commission Rate
               </p>
               <p class="mb-3 fw-bold" style="font-size:1.5rem;color:var(--color-text);line-height:1.1;">
-                {{ ref_content['ref_conversion_rate'] }}%
+                {{ referral_commission_rate }}%
               </p>
               <div class="d-flex flex-column gap-2">
                 <div class="d-flex justify-content-between small mb-1"
                      style="font-size:0.72rem;opacity:0.6;">
-                  <span>Visits</span>
-                  <span class="fw-bold">{{ ref_content['referral_clicks'] }}</span>
+                  <span>Commission</span>
+                  <span class="fw-bold">{{ referral_commission_rate }}%</span>
                 </div>
                 <div class="progress-bar-custom">
                   <div class="progress-bar-fill"
-                       style="width:{{ ref_content['ref_conversion_rate'] }}%;
+                       style="width:{{ referral_commission_rate }}%;
                               background:var(--color-accent);"></div>
                 </div>
                 <div class="d-flex justify-content-between small"
                      style="font-size:0.72rem;opacity:0.6;">
-                  <span>Sign-ups</span>
-                  <span class="fw-bold">{{ ref_content['referral_sign_up'] }}</span>
+                  <span>Remaining</span>
+                  <span class="fw-bold">{{ 100 - referral_commission_rate }}%</span>
                 </div>
               </div>
             </div>
@@ -357,7 +359,7 @@
         {% set steps = [
           {'num':'01','icon':'fa-link',           'title':'Share Your Link',   'desc':'Copy your unique referral link and share it on social media, blogs, or with friends.'},
           {'num':'02','icon':'fa-user-check',     'title':'They Sign Up',      'desc':'When someone clicks your link and creates an account, they are tracked as your referral.'},
-          {'num':'03','icon':'fa-shopping-cart',  'title':'They Place Orders', 'desc':'Every time your referral places an order you earn a ' ~ settings["referral_commision"] ~ '% commission automatically.'},
+          {'num':'03','icon':'fa-shopping-cart',  'title':'They Place Orders', 'desc':'Every time your referral places an order you earn a ' ~ referral_commission_rate ~ '% commission automatically.'},
           {'num':'04','icon':'fa-wallet',         'title':'You Get Paid',      'desc':'Once your unpaid balance reaches the minimum payout of ' ~ convert_currency(settings["referral_payout"]) ~ ', you can request a withdrawal.'}
         ] %}
         {% for s in steps %}
@@ -569,8 +571,8 @@
   var hoverColor  = getComputedStyle(document.documentElement)
                       .getPropertyValue('--color-hover-bg').trim() || '#C1F2E8';
 
-  /* ── Donut 1: Conversion rate ── */
-  var convRate = parseFloat('{{ ref_content["ref_conversion_rate"] }}') || 0;
+  /* ── Donut 1: Commission rate ── */
+  var convRate = parseFloat('{{ referral_commission_rate }}') || 0;
   new Chart(document.getElementById('donutConversion'), {
     type: 'doughnut',
     data: {
