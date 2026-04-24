@@ -7,6 +7,27 @@
   .page-link { transition: all 0.18s ease; }
   .feature-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
   .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px var(--color-border) !important; }
+  .decorative-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .decorative-card::after {
+    content: "";
+    position: absolute;
+    right: -26px;
+    top: -26px;
+    width: 108px;
+    height: 108px;
+    border-radius: 50%;
+    background: var(--decor-circle-color, var(--color-text));
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .decorative-card > * {
+    position: relative;
+    z-index: 1;
+  }
   .txn-row { transition: background 0.15s ease; }
   .txn-row:hover { background: var(--color-hover-bg) !important; }
   .form-control:focus, .form-select:focus {
@@ -102,8 +123,8 @@
     <div class="row g-3 mb-4 d-none d-sm-flex">
 
       <div class="col-12 col-sm-6 col-lg-3">
-        <div class="feature-card h-100 p-4 rounded-4"
-             style="background:var(--color-text);border:1px solid var(--color-border);">
+           <div class="feature-card decorative-card h-100 p-4 rounded-4"
+             style="--decor-circle-color:var(--color-bg);background:var(--color-text);border:1px solid var(--color-border);">
           <div style="width:44px;height:44px;border-radius:12px;
                       background:var(--color-hover-bg);
                       display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
@@ -117,8 +138,8 @@
       </div>
 
       <div class="col-12 col-sm-6 col-lg-3">
-        <div class="feature-card h-100 p-4 rounded-4"
-             style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+           <div class="feature-card decorative-card h-100 p-4 rounded-4"
+             style="--decor-circle-color:var(--color-text);background:var(--color-accent-contrast);border:1px solid var(--color-border);">
           <div style="width:44px;height:44px;border-radius:12px;
                       background:var(--color-hover-bg);
                       display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
@@ -132,8 +153,8 @@
       </div>
 
       <div class="col-12 col-sm-6 col-lg-3">
-        <div class="feature-card h-100 p-4 rounded-4"
-             style="background:var(--color-text);border:1px solid var(--color-border);">
+           <div class="feature-card decorative-card h-100 p-4 rounded-4"
+             style="--decor-circle-color:var(--color-bg);background:var(--color-text);border:1px solid var(--color-border);">
           <div style="width:44px;height:44px;border-radius:12px;
                       background:var(--color-hover-bg);
                       display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
@@ -147,8 +168,8 @@
       </div>
 
       <div class="col-12 col-sm-6 col-lg-3">
-        <div class="feature-card h-100 p-4 rounded-4"
-             style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+           <div class="feature-card decorative-card h-100 p-4 rounded-4"
+             style="--decor-circle-color:var(--color-text);background:var(--color-accent-contrast);border:1px solid var(--color-border);">
           <div style="width:44px;height:44px;border-radius:12px;
                       background:var(--color-hover-bg);
                       display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
@@ -163,8 +184,8 @@
 
     </div>
 <div class="d-block d-sm-none mb-4">
-  <div class="p-4 rounded-4 shadow-sm"
-       style="background-color: var(--color-text); border: 3px solid var(--color-bg);">
+    <div class="decorative-card p-4 rounded-4 shadow-sm"
+      style="--decor-circle-color:var(--color-bg);background-color: var(--color-text); border: 3px solid var(--color-bg);">
     
     <div class="d-flex align-items-center gap-3 mb-4 pb-3"
          style="border-bottom: 1px solid var(--color-hover-bg);">
@@ -228,8 +249,8 @@
 
       <!-- Left: payment form -->
       <div class="col-12 col-lg-5">
-        <div class="h-100 p-4 p-md-5 rounded-4"
-             style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+           <div class="decorative-card h-100 p-4 p-md-5 rounded-4"
+             style="--decor-circle-color:var(--color-text);background:var(--color-accent-contrast);border:1px solid var(--color-border);">
 
           <div class="d-flex align-items-center gap-3 mb-4 pb-3"
                style="border-bottom:1px solid var(--color-border);">
@@ -371,8 +392,8 @@
 
       <!-- Right: transaction history -->
       <div class="col-12 col-lg-7">
-        <div class="h-100 p-4 p-md-5 rounded-4"
-             style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+           <div class="decorative-card h-100 p-4 p-md-5 rounded-4"
+             style="--decor-circle-color:var(--color-text);background:var(--color-accent-contrast);border:1px solid var(--color-border);">
 
           <div class="d-flex align-items-center gap-3 mb-4 pb-3"
                style="border-bottom:1px solid var(--color-border);">
@@ -391,8 +412,8 @@
             </div>
           </div>
 
-          <div class="rounded-4 overflow-hidden"
-               style="background:var(--color-accent-contrast);border:1px solid var(--color-border);">
+          <div class="decorative-card rounded-4 overflow-hidden"
+            style="--decor-circle-color:var(--color-text);background:var(--color-accent-contrast);border:1px solid var(--color-border);">
             <div class="table-responsive">
               <table class="table mb-0 align-middle">
                 <thead>
