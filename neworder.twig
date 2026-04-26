@@ -365,13 +365,12 @@
 
   <div class="container-fluid px-3 px-md-5">
     <div class="row g-3" style="margin-top:-28px;">
-
-      {% set stats = [
-        {'icon':'fa-user',          'label':'Username',       'val': user['username'],                        'color':'var(--color-accent)'},
-        {'icon':'fa-shopping-cart', 'label':'Total Orders',   'val': totalOrdersCount,                        'color':'#0284c7'},
-        {'icon':'fa-wallet',        'label':'Total Balance',  'val': convert_currency(user['balance']),       'color':'#198754'},
-        {'icon':'fa-coins',         'label':'Total Spent',    'val': convert_currency(user['spent']),         'color':'#d97706'}
-      ] %}
+{% set stats = [
+    {'icon':'fa-calendar-check',          'label':'Today Orders',   'val': todayOrdersCount,                  'color':'var(--color-accent)'},
+    {'icon':'fa-shopping-cart', 'label':'Total Orders',   'val': totalOrdersCount,                  'color':'#0284c7'},
+    {'icon':'fa-wallet',        'label':'Total Balance',  'val': convert_currency(user['balance']), 'color':'#198754'},
+    {'icon':'fa-coins',         'label':'Total Spent',    'val': convert_currency(user['spent']),   'color':'#d97706'}
+] %}
 
       {% for s in stats %}
         <div class="col-6 col-lg-3">
